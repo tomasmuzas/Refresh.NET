@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
+using LibAdapter.Visitors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,89 +12,51 @@ namespace LibAdapter
         private readonly Dictionary<string, ISymbol> invocationMap =
             new Dictionary<string, ISymbol>();
 
-        private readonly Dictionary<IdentifierNameSyntax, ISymbol> identifierMap =
-            new Dictionary<IdentifierNameSyntax, ISymbol>();
+        private readonly Dictionary<string, ISymbol> identifierMap =
+            new Dictionary<string, ISymbol>();
 
-        public List<SyntaxTree> Trees { get; private set; }
+        public SyntaxTree Tree { get; private set; }
 
-        public static SyntaxTypeMap FromProject(string filesPath, string mainDllPath)
+        public CompilationUnitSyntax Root { get; set; }
+
+        public SyntaxTypeMap(SyntaxTree tree)
         {
-            var map = new SyntaxTypeMap();
-            var references = Assembly.LoadFile(mainDllPath).GetReferencedAssemblies();
-
-            var compilation = CSharpCompilation.Create("Code")
-                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-                .AddReferences(MetadataReference.CreateFromFile(mainDllPath));
-
-            foreach (var name in references)
-            {
-                var assembly = Assembly.Load(name);
-                compilation = compilation.AddReferences(MetadataReference.CreateFromFile(assembly.Location));
-            }
-
-            map.Trees = new List<SyntaxTree>();
-            foreach (var filePath in Directory.GetFiles(filesPath, "*.cs", SearchOption.AllDirectories))
-            {
-                var code = File.ReadAllText(filePath);
-                var tree = CSharpSyntaxTree.ParseText(code);
-                map.Trees.Add(tree);
-                compilation = compilation.AddSyntaxTrees(tree);
-            }
-
-            foreach (var tree in map.Trees)
-            {
-                var root = tree.GetCompilationUnitRoot();
-
-                var semanticModel = compilation.GetSemanticModel(tree);
-                var invocations = root.DescendantNodes().OfType<InvocationExpressionSyntax>();
-                foreach (var invocation in invocations)
-                {
-                    var containingSymbol = semanticModel.GetSymbolInfo(invocation).Symbol;
-                    map.invocationMap.Add(invocation.ToFullString(), containingSymbol);
-                }
-
-                var identifiers = root.DescendantNodes().OfType<IdentifierNameSyntax>();
-                foreach (var identifier in identifiers)
-                {
-                    var containingSymbol = semanticModel.GetSymbolInfo(identifier).Symbol;
-                    //if (!map.identifierMap.ContainsKey(MakeKey(identifier)))
-                    //{
-                        map.identifierMap.Add(MakeKey(identifier), containingSymbol);
-                    //}
-                }
-            }
-
-            return map;
+            Tree = tree;
+            Root = tree.GetCompilationUnitRoot();
         }
 
-        public static IdentifierNameSyntax MakeKey(IdentifierNameSyntax node)
+        public void PopulateFromCompilation(CSharpCompilation compilation)
         {
-            return node;
+            var semanticModel = compilation.GetSemanticModel(Tree);
+            var invocations = Root.DescendantNodesAndSelf().OfType<InvocationExpressionSyntax>().ToList();
+            foreach (var invocation in invocations)
+            {
+                var containingSymbol = semanticModel.GetSymbolInfo(invocation).Symbol;
+                invocationMap.Add(MakeKey(invocation), containingSymbol);
+            }
+
+            var identifiers = Root.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>().ToList();
+
+            foreach (var identifier in identifiers)
+            {
+                var containingSymbol = semanticModel.GetSymbolInfo(identifier).Symbol;
+                identifierMap.Add(MakeKey(identifier), containingSymbol);
+            }
         }
 
-        public ISymbol GetInvocationSymbol(string invocationFullName)
+        private static string MakeKey(SyntaxNode node)
         {
-            return invocationMap[invocationFullName];
+            return node.GetAnnotations("TraceAnnotation").First().Data;
+        }
+
+        public ISymbol GetInvocationSymbol(InvocationExpressionSyntax invocation)
+        {
+            return invocationMap[MakeKey(invocation)];
         }
 
         public ISymbol GetIdentifierSymbol(IdentifierNameSyntax identifier)
         {
             return identifierMap[MakeKey(identifier)];
-        }
-
-        public void UpdateInvocationMap(InvocationExpressionSyntax old, InvocationExpressionSyntax @new)
-        {
-            var value = invocationMap[old.ToFullString()];
-            invocationMap.Remove(old.ToFullString());
-            invocationMap.Add(@new.ToFullString(), value);
-        }
-
-        public void UpdateIdentifierMap(IdentifierNameSyntax old, IdentifierNameSyntax @new)
-        {
-            var key = MakeKey(old);
-            var value = identifierMap[key];
-            identifierMap.Remove(key);
-            identifierMap.Add(MakeKey(@new), value);
         }
     }
 }

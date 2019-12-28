@@ -31,13 +31,12 @@ namespace LibAdapter.Visitors.Method
                 foreach (var arg in ArgumentTypes)
                 {
                     newInvocation = newInvocation.WithArgumentList(newInvocation.ArgumentList.AddArguments(
-                        Argument(DefaultExpression(IdentifierName(arg)))
+                        Argument(DefaultExpression(IdentifierName(arg)
+                                .WithAdditionalAnnotations(new SyntaxAnnotation("TraceAnnotation", null))))
                             .WithLeadingTrivia(Space)));
                 }
 
-                Map.UpdateInvocationMap(invocation, newInvocation);
-
-                invocation = newInvocation;
+                invocation = invocation.CopyAnnotationsTo(newInvocation);
             }
             return invocation;
         }

@@ -17,7 +17,7 @@ namespace LibAdapter.Visitors.Method
         {
             var methodIdentifier = GetMethodIdentifier(invocation);
             var methodIdentifierName = methodIdentifier.Identifier.ValueText;
-            var containingClass = Map.GetInvocationSymbol(invocation.ToFullString()).ContainingSymbol;
+            var containingClass = Map.GetInvocationSymbol(invocation).ContainingSymbol;
             return containingClass.ToString() == fullTypeName && methodIdentifierName == methodName;
         }
 

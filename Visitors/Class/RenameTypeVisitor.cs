@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace LibAdapter.Visitors.Class
 {
@@ -18,15 +19,14 @@ namespace LibAdapter.Visitors.Class
 
         public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
         {
-            if (MatchesType(node, FullTypeName))
+            node = (IdentifierNameSyntax) base.VisitIdentifierName(node);
+            if (node != null && MatchesClassType(node, FullTypeName))
             {
-                var newNode = node.WithIdentifier(SyntaxFactory.Identifier(NewName)
+                node = node.Update(SyntaxFactory.Identifier(NewName)
                     .WithTrailingTrivia(node.Identifier.TrailingTrivia)
                     .WithLeadingTrivia(node.Identifier.LeadingTrivia));
 
-                Map.UpdateIdentifierMap(node, newNode);
-
-                node = newNode;
+                node = node.CopyAnnotationsTo(node);
             }
 
             return node;
