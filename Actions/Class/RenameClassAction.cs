@@ -17,7 +17,7 @@ namespace LibAdapter.Actions.Class
 
         public CSharpSyntaxRewriter ToVisitor(SyntaxTypeMap map)
         {
-            return new RenameClassVisitor(map, FullTypeName, NewName);
+            return new RenameTypeVisitor(map, FullTypeName, NewName);
         }
     }
 }
