@@ -27,13 +27,26 @@ namespace LibAdapter.Visitors.Method
         {
             if (InvocationMatches(invocation, FullTypeName, OldMethodName))
             {
+                var oldIdentifier = Map.GetMethodIdentifier(invocation);
+                var oldIdentifierInfo = Map.GetIdentifierInfo(oldIdentifier);
+
+                var newIdentifier = IdentifierName(NewMethodName);
+                newIdentifier = oldIdentifier.CopyAnnotationsTo(newIdentifier);
+
+                Map.UpdateIdentifierInfo(newIdentifier, new IdentifierTypeInfo {TypeName = oldIdentifierInfo.TypeName});
+
                 var newInvocation = invocation.ReplaceNode(
-                    GetMethodIdentifier(invocation)
-                        .WithAdditionalAnnotations(new SyntaxAnnotation("TraceAnnotation", null)),
-                    IdentifierName(NewMethodName));
-                //Map.UpdateInvocationMap(invocation, newInvocation);
+                    oldIdentifier,
+                    newIdentifier);
 
                 invocation = invocation.CopyAnnotationsTo(newInvocation);
+                
+                var invocationInfo = Map.GetInvocationInfo(invocation);
+                Map.UpdateInvocationInfo(invocation, new MethodTypeInfo
+                {
+                    TypeName = invocationInfo.TypeName,
+                    MethodName = NewMethodName
+                });
             }
             return invocation;
         }

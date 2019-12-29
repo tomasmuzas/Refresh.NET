@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LibAdapter.Visitors.Method
@@ -15,18 +14,8 @@ namespace LibAdapter.Visitors.Method
 
         protected bool InvocationMatches(InvocationExpressionSyntax invocation, string fullTypeName, string methodName)
         {
-            var methodIdentifier = GetMethodIdentifier(invocation);
-            var methodIdentifierName = methodIdentifier.Identifier.ValueText;
-            var containingClass = Map.GetInvocationSymbol(invocation).ContainingSymbol;
-            return containingClass.ToString() == fullTypeName && methodIdentifierName == methodName;
-        }
-
-        protected IdentifierNameSyntax GetMethodIdentifier(InvocationExpressionSyntax invocation)
-        {
-            return invocation.Expression
-                .DescendantNodes()
-                .OfType<IdentifierNameSyntax>()
-                .ElementAt(1);
+            var methodInfo = Map.GetInvocationInfo(invocation);
+            return methodInfo.TypeName == fullTypeName && methodInfo.MethodName == methodName;
         }
     }
 }

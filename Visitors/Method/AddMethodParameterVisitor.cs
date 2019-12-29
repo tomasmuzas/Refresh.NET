@@ -28,12 +28,16 @@ namespace LibAdapter.Visitors.Method
             if (InvocationMatches(invocation, FullTypeName, MethodName))
             {
                 InvocationExpressionSyntax newInvocation = invocation;
-                foreach (var arg in ArgumentTypes)
+                foreach (var argType in ArgumentTypes)
                 {
+                    var newIdentifier = IdentifierName(argType);
+                    newIdentifier = (IdentifierNameSyntax) new AnnotationVisitor().Visit(newIdentifier);
+                        
                     newInvocation = newInvocation.WithArgumentList(newInvocation.ArgumentList.AddArguments(
-                        Argument(DefaultExpression(IdentifierName(arg)
-                                .WithAdditionalAnnotations(new SyntaxAnnotation("TraceAnnotation", null))))
+                        Argument(DefaultExpression(newIdentifier))
                             .WithLeadingTrivia(Space)));
+
+                    Map.AddNewIdentifier(newIdentifier, new IdentifierTypeInfo {TypeName = argType});
                 }
 
                 invocation = invocation.CopyAnnotationsTo(newInvocation);

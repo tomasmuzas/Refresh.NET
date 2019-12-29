@@ -1,4 +1,4 @@
 rename method LibAdapterTestSolution.TestClass WriteLine Write
+add argument LibAdapterTestSolution.TestClass Write bool,string,TestClass
 rename type LibAdapterTestSolution.TestClass NewObject
 rename type LibAdapterTestSolution.ITestInterface INewInterface
-add argument LibAdapterTestSolution.TestClass Write bool,string,TestClass
