@@ -14,7 +14,7 @@ namespace LibAdapter
         private readonly Dictionary<string, IdentifierTypeInfo> identifierMap =
             new Dictionary<string, IdentifierTypeInfo>();
 
-        public SyntaxTree Tree { get; private set; }
+        private SyntaxTree Tree { get; }
 
         public CompilationUnitSyntax Root { get; set; }
 

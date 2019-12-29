@@ -10,7 +10,7 @@ namespace LibAdapter.Visitors.Method
 
         private string OldMethodName { get; }
 
-        public string NewMethodName { get; }
+        private string NewMethodName { get; }
 
         public RenameMethodVisitor(
             SyntaxTypeMap map, 
