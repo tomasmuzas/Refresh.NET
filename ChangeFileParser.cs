@@ -3,6 +3,7 @@ using System.IO;
 using LibAdapter.Actions;
 using LibAdapter.Actions.Class;
 using LibAdapter.Actions.Method;
+using LibAdapter.Actions.Namespace;
 
 namespace LibAdapter
 {
@@ -46,6 +47,11 @@ namespace LibAdapter
                 case "type":
                 {
                     actions.Add(new RenameClassAction(arguments[2], arguments[3]));
+                    break;
+                }
+                case "namespace":
+                {
+                    actions.Add(new RenameNamespaceAction(arguments[2], arguments[3]));
                     break;
                 }
             }
