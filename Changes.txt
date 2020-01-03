@@ -1,5 +1,2 @@
-rename method LibAdapterTestSolution.TestClass WriteLine Write
-add argument LibAdapterTestSolution.TestClass Write bool,string,LibAdapterTestSolution.TestClass
-rename type LibAdapterTestSolution.TestClass LibAdapterTestSolution.NewObject
-rename type LibAdapterTestSolution.ITestInterface INewInterface
-rename namespace System.Collections.Generic System.NewNamespace
+replace_constructor Newtonsoft.Json.Converters.StringEnumConverter bool Newtonsoft.Json.Serialization.NamingStrategy,bool 
+replace_method Newtonsoft.Json.Converters.StringEnumConverter ToString() Write(Newtonsoft.Json.Serialization.NamingStrategy,string) 

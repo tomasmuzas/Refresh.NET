@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System; 
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,7 +30,20 @@ namespace LibAdapter
 
             foreach (var name in references)
             {
-                var assembly = Assembly.Load(name);
+                Assembly assembly;
+                if (name.Name == "TestLibrary")
+                {
+                    assembly = Assembly.LoadFile("C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapterTestSolution\\bin\\Debug\\netcoreapp3.0\\TestLibrary.dll");
+                }
+                else if (name.Name == "Newtonsoft.Json")
+                {
+                    assembly = Assembly.LoadFile("C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapterTestSolution\\bin\\Debug\\netcoreapp3.0\\Newtonsoft.Json.dll");
+                }
+                else
+                {
+                    assembly = Assembly.Load(name);
+                }
+
                 compilation = compilation.AddReferences(MetadataReference.CreateFromFile(assembly.Location));
             }
 
@@ -60,6 +73,8 @@ namespace LibAdapter
                     map.Root = (CompilationUnitSyntax) action.ToVisitor(map).Visit(map.Root);
                 }
             }
+
+            
 
             foreach (var map in maps)
             {

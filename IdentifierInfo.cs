@@ -1,9 +1,7 @@
 ﻿namespace LibAdapter
 {
-    public class MethodTypeInfo
+    public class IdentifierInfo
     {
         public string TypeName { get; set; }
-
-        public string MethodName { get; set; }
     }
 }

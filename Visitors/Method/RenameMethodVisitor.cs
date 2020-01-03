@@ -33,7 +33,7 @@ namespace LibAdapter.Visitors.Method
                 var newIdentifier = IdentifierName(NewMethodName);
                 newIdentifier = oldIdentifier.CopyAnnotationsTo(newIdentifier);
 
-                Map.UpdateIdentifierInfo(newIdentifier, new IdentifierTypeInfo {TypeName = oldIdentifierInfo.TypeName});
+                Map.UpdateIdentifierInfo(newIdentifier, new IdentifierInfo {TypeName = oldIdentifierInfo.TypeName});
 
                 var newInvocation = invocation.ReplaceNode(
                     oldIdentifier,
@@ -41,8 +41,8 @@ namespace LibAdapter.Visitors.Method
 
                 invocation = invocation.CopyAnnotationsTo(newInvocation);
                 
-                var invocationInfo = Map.GetInvocationInfo(invocation);
-                Map.UpdateInvocationInfo(invocation, new MethodTypeInfo
+                var invocationInfo = Map.GetMethodInfo(invocation);
+                Map.UpdateInvocationInfo(invocation, new MethodInfo
                 {
                     TypeName = invocationInfo.TypeName,
                     MethodName = NewMethodName

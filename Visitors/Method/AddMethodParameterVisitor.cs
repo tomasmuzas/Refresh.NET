@@ -15,8 +15,7 @@ namespace LibAdapter.Visitors.Method
             SyntaxTypeMap map,
             string fullTypeName,
             string MethodName,
-            IEnumerable<string> argumentTypes
-            ) : base(map)
+            IEnumerable<string> argumentTypes) : base(map)
         {
             FullTypeName = fullTypeName;
             this.MethodName = MethodName;
@@ -37,7 +36,7 @@ namespace LibAdapter.Visitors.Method
                         Argument(DefaultExpression(newIdentifier))
                             .WithLeadingTrivia(Space)));
 
-                    Map.AddNewIdentifier(newIdentifier, new IdentifierTypeInfo {TypeName = argType});
+                    Map.AddNewIdentifier(newIdentifier, new IdentifierInfo {TypeName = argType});
                 }
 
                 invocation = invocation.CopyAnnotationsTo(newInvocation);

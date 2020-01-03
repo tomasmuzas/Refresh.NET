@@ -8,11 +8,11 @@ namespace LibAdapter
 {
     public class SyntaxTypeMap
     {
-        private readonly Dictionary<string, MethodTypeInfo> invocationMap =
-            new Dictionary<string, MethodTypeInfo>();
+        private readonly Dictionary<string, MethodInfo> methodMap =
+            new Dictionary<string, MethodInfo>();
 
-        private readonly Dictionary<string, IdentifierTypeInfo> identifierMap =
-            new Dictionary<string, IdentifierTypeInfo>();
+        private readonly Dictionary<string, IdentifierInfo> identifierMap =
+            new Dictionary<string, IdentifierInfo>();
 
         private SyntaxTree Tree { get; }
 
@@ -27,16 +27,47 @@ namespace LibAdapter
         public void PopulateFromCompilation(CSharpCompilation compilation)
         {
             var semanticModel = compilation.GetSemanticModel(Tree);
+
+            var types = Root.DescendantNodesAndSelf().OfType<ObjectCreationExpressionSyntax>().ToList();
+            foreach (var type in types)
+            {
+                var containingType = semanticModel.GetSymbolInfo(type).Symbol.ContainingType;
+                var constructorInfo = new MethodInfo
+                {
+                    TypeName = containingType.ToString(),
+                    MethodName = "ctor"
+                };
+
+                var args = new List<string>();
+                foreach (var argument in type.ArgumentList.Arguments)
+                {
+                    var symbolInfo = semanticModel.GetTypeInfo(argument.Expression).ConvertedType;
+                    args.Add(symbolInfo.ToString());
+                }
+
+                constructorInfo.Arguments = args.ToArray();
+                methodMap.Add(MakeKey(type), constructorInfo);
+            }
+
             var invocations = Root.DescendantNodesAndSelf().OfType<InvocationExpressionSyntax>().ToList();
             foreach (var invocation in invocations)
             {
                 var containingSymbol = semanticModel.GetSymbolInfo(invocation).Symbol.ContainingSymbol;
-                var methodInfo = new MethodTypeInfo
+                var methodInfo = new MethodInfo
                 {
                     TypeName = containingSymbol.ToString(),
                     MethodName = GetMethodIdentifier(invocation).Identifier.ValueText
                 };
-                invocationMap.Add(MakeKey(invocation), methodInfo);
+
+                var args = new List<string>();
+                foreach (var argument in invocation.ArgumentList.Arguments)
+                {
+                    var symbolInfo = semanticModel.GetTypeInfo(argument.Expression).ConvertedType;
+                    args.Add(symbolInfo.ToString());
+                }
+
+                methodInfo.Arguments = args.ToArray();
+                methodMap.Add(MakeKey(invocation), methodInfo);
             }
 
             var identifiers = Root.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>().ToList();
@@ -44,7 +75,7 @@ namespace LibAdapter
             foreach (var identifier in identifiers)
             {
                 var containingSymbol = semanticModel.GetSymbolInfo(identifier).Symbol;
-                identifierMap.Add(MakeKey(identifier), new IdentifierTypeInfo
+                identifierMap.Add(MakeKey(identifier), new IdentifierInfo
                 {
                     TypeName = containingSymbol.ToString()
                 });
@@ -64,28 +95,28 @@ namespace LibAdapter
             return node.GetAnnotations("TraceAnnotation").First().Data;
         }
 
-        public void UpdateInvocationInfo(InvocationExpressionSyntax invocation, MethodTypeInfo info)
+        public void UpdateInvocationInfo(InvocationExpressionSyntax invocation, MethodInfo info)
         {
-            invocationMap.Remove(MakeKey(invocation));
-            invocationMap.Add(MakeKey(invocation), info);
+            methodMap.Remove(MakeKey(invocation));
+            methodMap.Add(MakeKey(invocation), info);
         }
 
-        public MethodTypeInfo GetInvocationInfo(InvocationExpressionSyntax invocation)
+        public MethodInfo GetMethodInfo(ExpressionSyntax method)
         {
-            return invocationMap[MakeKey(invocation)];
+            return methodMap[MakeKey(method)];
         }
 
-        public IdentifierTypeInfo GetIdentifierInfo(IdentifierNameSyntax identifier)
+        public IdentifierInfo GetIdentifierInfo(IdentifierNameSyntax identifier)
         {
             return identifierMap[MakeKey(identifier)];
         }
 
-        public void AddNewIdentifier(IdentifierNameSyntax identifier, IdentifierTypeInfo info)
+        public void AddNewIdentifier(IdentifierNameSyntax identifier, IdentifierInfo info)
         {
             identifierMap.Add(MakeKey(identifier), info);
         }
 
-        public void UpdateIdentifierInfo(IdentifierNameSyntax identifier, IdentifierTypeInfo info)
+        public void UpdateIdentifierInfo(IdentifierNameSyntax identifier, IdentifierInfo info)
         {
             identifierMap.Remove(MakeKey(identifier));
             identifierMap.Add(MakeKey(identifier), info);
