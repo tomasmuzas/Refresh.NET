@@ -1,2 +1,2 @@
-replace_constructor Newtonsoft.Json.Converters.StringEnumConverter bool Newtonsoft.Json.Serialization.NamingStrategy,bool 
-replace_method Newtonsoft.Json.Converters.StringEnumConverter ToString() Write(Newtonsoft.Json.Serialization.NamingStrategy,string) 
+replace_constructor Newtonsoft.Json.Converters.StringEnumConverter bool Newtonsoft.Json.Serialization.NamingStrategy,bool
+rename method Newtonsoft.Json.JsonConvert SerializeObject Serialize

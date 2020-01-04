@@ -35,7 +35,7 @@ namespace LibAdapter.Visitors.Class
 
         public override SyntaxNode VisitObjectCreationExpression(ObjectCreationExpressionSyntax node)
         {
-            base.VisitObjectCreationExpression(node);
+            node = (ObjectCreationExpressionSyntax) base.VisitObjectCreationExpression(node);
             if (MethodMatches(node))
             {
                 node = node.WithArgumentList(CreateArgumentList(NewArgumentTypes));
@@ -46,7 +46,7 @@ namespace LibAdapter.Visitors.Class
 
         public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            base.VisitInvocationExpression(node);
+            node = (InvocationExpressionSyntax) base.VisitInvocationExpression(node);
             if (MethodMatches(node))
             {
                 node = (InvocationExpressionSyntax) new RenameMethodVisitor(Map, FullTypeName, OldMethodName, NewMethodName)

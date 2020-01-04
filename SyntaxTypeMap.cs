@@ -31,7 +31,7 @@ namespace LibAdapter
             var types = Root.DescendantNodesAndSelf().OfType<ObjectCreationExpressionSyntax>().ToList();
             foreach (var type in types)
             {
-                var containingType = semanticModel.GetSymbolInfo(type).Symbol.ContainingType;
+                var containingType = semanticModel.GetTypeInfo(type).Type;
                 var constructorInfo = new MethodInfo
                 {
                     TypeName = containingType.ToString(),
@@ -39,7 +39,7 @@ namespace LibAdapter
                 };
 
                 var args = new List<string>();
-                foreach (var argument in type.ArgumentList.Arguments)
+                foreach (var argument in type.ArgumentList?.Arguments ?? Enumerable.Empty<ArgumentSyntax>())
                 {
                     var symbolInfo = semanticModel.GetTypeInfo(argument.Expression).ConvertedType;
                     args.Add(symbolInfo.ToString());
