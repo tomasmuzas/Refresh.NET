@@ -1,4 +1,4 @@
-replace_constructor Newtonsoft.Json.Converters.StringEnumConverter bool Newtonsoft.Json.Serialization.NamingStrategy,bool
-rename method Newtonsoft.Json.JsonConvert SerializeObject Serialize
-add_argument method:Newtonsoft.Json.JsonConvert.Serialize expression:'"xd"' 1,expression:'true' 3
-reorder_arguments method:Newtonsoft.Json.JsonConvert.Serialize 2,1,4,3
+rename type LibAdapter.Visitors.Namespace.RenameNamespaceVisitor NEWRenameNamespaceVisitor
+rename type LibAdapter.SyntaxTypeMap MajesticTypeMap
+add_argument method:string.Split expression:'true' 2
+reorder_arguments method:string.Split 2,1

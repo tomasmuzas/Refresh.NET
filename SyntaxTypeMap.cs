@@ -52,11 +52,15 @@ namespace LibAdapter
             var invocations = Root.DescendantNodesAndSelf().OfType<InvocationExpressionSyntax>().ToList();
             foreach (var invocation in invocations)
             {
-                var containingSymbol = semanticModel.GetSymbolInfo(invocation).Symbol.ContainingSymbol;
+                var symInfo = semanticModel.GetSymbolInfo(invocation);
+                var containingSymbol = symInfo.CandidateSymbols.Any() ? 
+                    symInfo.CandidateSymbols.First().ContainingSymbol
+                    : semanticModel.GetSymbolInfo(invocation).Symbol.ContainingSymbol;
+
                 var methodInfo = new MethodInfo
                 {
                     TypeName = containingSymbol.ToString(),
-                    MethodName = GetMethodIdentifier(invocation).Identifier.ValueText
+                    MethodName = GetMethodIdentifier(invocation)?.Identifier.ValueText
                 };
 
                 var args = new List<string>();
@@ -75,19 +79,21 @@ namespace LibAdapter
             foreach (var identifier in identifiers)
             {
                 var containingSymbol = semanticModel.GetSymbolInfo(identifier).Symbol;
-                identifierMap.Add(MakeKey(identifier), new IdentifierInfo
-                {
-                    TypeName = containingSymbol.ToString()
-                });
+                if(containingSymbol != null){
+                    identifierMap.Add(MakeKey(identifier), new IdentifierInfo
+                    {
+                        TypeName = containingSymbol.ToString()
+                    });
+                }
             }
         }
 
         public IdentifierNameSyntax GetMethodIdentifier(InvocationExpressionSyntax invocation)
         {
-            return invocation.Expression
+            var nodes = invocation.Expression
                 .DescendantNodes()
-                .OfType<IdentifierNameSyntax>()
-                .ElementAt(1);
+                .OfType<IdentifierNameSyntax>().ToList();
+            return nodes.LastOrDefault() ?? null;
         }
 
         private static string MakeKey(SyntaxNode node)
@@ -108,7 +114,8 @@ namespace LibAdapter
 
         public IdentifierInfo GetIdentifierInfo(IdentifierNameSyntax identifier)
         {
-            return identifierMap[MakeKey(identifier)];
+            identifierMap.TryGetValue(MakeKey(identifier), out var value);
+            return value;
         }
 
         public void AddNewIdentifier(IdentifierNameSyntax identifier, IdentifierInfo info)

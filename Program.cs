@@ -56,16 +56,19 @@ namespace LibAdapter
             compilation = compilation.AddSyntaxTrees(trees);
             var maps = new List<SyntaxTypeMap>();
 
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             foreach (var tree in trees)
             {
                 var map = new SyntaxTypeMap(tree);
                 map.PopulateFromCompilation(compilation);
                 maps.Add(map);
             }
+            watch.Stop();
+            Console.WriteLine("Loading took:" + watch.ElapsedMilliseconds);
 
             #endregion
-
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+            
+            watch = System.Diagnostics.Stopwatch.StartNew();
             foreach (var action in actions)
             {
                 foreach (var map in maps)

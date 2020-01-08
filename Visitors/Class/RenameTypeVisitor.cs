@@ -21,7 +21,7 @@ namespace LibAdapter.Visitors.Class
             node = (IdentifierNameSyntax) base.VisitIdentifierName(node);
             if (node != null && MatchesClassType(node, FullTypeName))
             {
-                node = node.Update(SyntaxFactory.Identifier(NewName)
+                node = node.WithIdentifier(SyntaxFactory.Identifier(NewName)
                     .WithTrailingTrivia(node.Identifier.TrailingTrivia)
                     .WithLeadingTrivia(node.Identifier.LeadingTrivia));
 
