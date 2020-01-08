@@ -24,6 +24,7 @@ namespace LibAdapter.Visitors.Method
 
         public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax invocation)
         {
+            invocation = (InvocationExpressionSyntax) base.VisitInvocationExpression(invocation);
             if (InvocationMatches(invocation, FullTypeName, MethodName))
             {
                 InvocationExpressionSyntax newInvocation = invocation;
@@ -37,9 +38,12 @@ namespace LibAdapter.Visitors.Method
                     argList.Insert(arg.position - 1, argumentNode);
                 }
 
-                newInvocation = newInvocation.WithArgumentList(
-                    ArgumentList(
-                        SeparatedList(argList)));
+                var argListSyntax = ArgumentList(SeparatedList(argList));
+                argListSyntax = argListSyntax.WithCloseParenToken(argListSyntax.CloseParenToken
+                    .WithTrailingTrivia(invocation.ArgumentList.CloseParenToken.TrailingTrivia)
+                    .WithLeadingTrivia(invocation.ArgumentList.CloseParenToken.LeadingTrivia));
+
+                newInvocation = newInvocation.WithArgumentList(argListSyntax);
 
                 invocation = invocation.CopyAnnotationsTo(newInvocation);
             }
