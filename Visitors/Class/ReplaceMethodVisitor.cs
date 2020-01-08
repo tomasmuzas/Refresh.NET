@@ -38,7 +38,11 @@ namespace LibAdapter.Visitors.Class
             node = (ObjectCreationExpressionSyntax) base.VisitObjectCreationExpression(node);
             if (MethodMatches(node))
             {
-                node = node.WithArgumentList(CreateArgumentList(NewArgumentTypes));
+                node = node.WithArgumentList(
+                    CreateArgumentList(
+                        NewArgumentTypes,
+                        node.ArgumentList.CloseParenToken.LeadingTrivia,
+                        node.ArgumentList.CloseParenToken.TrailingTrivia));
             }
 
             return node;
@@ -51,7 +55,12 @@ namespace LibAdapter.Visitors.Class
             {
                 node = (InvocationExpressionSyntax) new RenameMethodVisitor(Map, FullTypeName, OldMethodName, NewMethodName)
                     .VisitInvocationExpression(node);
-                node = node.WithArgumentList(CreateArgumentList(NewArgumentTypes));
+
+                node = node.WithArgumentList(
+                    CreateArgumentList(
+                        NewArgumentTypes,
+                        node.ArgumentList.CloseParenToken.LeadingTrivia,
+                        node.ArgumentList.CloseParenToken.TrailingTrivia));
             }
 
             return node;
@@ -65,9 +74,9 @@ namespace LibAdapter.Visitors.Class
                    && ArgumentsMatch(info.Arguments, OldArgumentTypes);
         }
 
-        private ArgumentListSyntax CreateArgumentList(string[] types)
+        private ArgumentListSyntax CreateArgumentList(string[] types, SyntaxTriviaList leadingTrivia, SyntaxTriviaList trailingTrivia)
         {
-            return ArgumentList(
+            var argList = ArgumentList(
                 SeparatedList(types.Select(t =>
                 {
                     var newIdentifier = IdentifierName(t);
@@ -80,6 +89,11 @@ namespace LibAdapter.Visitors.Class
 
                     return Argument(DefaultExpression(newIdentifier));
                 })));
+
+            argList = argList.WithCloseParenToken(argList.CloseParenToken
+                .WithTrailingTrivia(trailingTrivia)
+                .WithLeadingTrivia(leadingTrivia));
+            return argList;
         }
 
         private bool ArgumentsMatch(string[] argumentTypes, string[] expectedTypes)

@@ -9,17 +9,17 @@ namespace LibAdapter.Visitors.Method
     {
         private string FullTypeName { get; }
         private string MethodName { get; }
-        private IEnumerable<string> ArgumentTypes { get; }
+        private IEnumerable<(string typeName, int position)> Arguments { get; }
 
         public AddMethodParameterVisitor(
             SyntaxTypeMap map,
             string fullTypeName,
             string MethodName,
-            IEnumerable<string> argumentTypes) : base(map)
+            IEnumerable<(string, int)> arguments) : base(map)
         {
             FullTypeName = fullTypeName;
             this.MethodName = MethodName;
-            ArgumentTypes = argumentTypes;
+            Arguments = arguments;
         }
 
         public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax invocation)
@@ -27,17 +27,19 @@ namespace LibAdapter.Visitors.Method
             if (InvocationMatches(invocation, FullTypeName, MethodName))
             {
                 InvocationExpressionSyntax newInvocation = invocation;
-                foreach (var argType in ArgumentTypes)
-                {
-                    var newIdentifier = IdentifierName(argType);
-                    newIdentifier = (IdentifierNameSyntax) new AnnotationVisitor().Visit(newIdentifier);
-                        
-                    newInvocation = newInvocation.WithArgumentList(newInvocation.ArgumentList.AddArguments(
-                        Argument(DefaultExpression(newIdentifier))
-                            .WithLeadingTrivia(Space)));
 
-                    Map.AddNewIdentifier(newIdentifier, new IdentifierInfo {TypeName = argType});
+                var argList = new List<ArgumentSyntax>();
+                argList.AddRange(invocation.ArgumentList.Arguments);
+
+                foreach (var arg in Arguments)
+                {
+                    var argumentNode = Argument(ParseExpression(arg.typeName)); // TODO: Add identifier type, if possible
+                    argList.Insert(arg.position - 1, argumentNode);
                 }
+
+                newInvocation = newInvocation.WithArgumentList(
+                    ArgumentList(
+                        SeparatedList(argList)));
 
                 invocation = invocation.CopyAnnotationsTo(newInvocation);
             }

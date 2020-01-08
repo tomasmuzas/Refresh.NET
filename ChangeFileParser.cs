@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using LibAdapter.Actions;
 using LibAdapter.Actions.Class;
@@ -25,10 +26,43 @@ namespace LibAdapter
                         ParseRename(arguments, actions);
                         break;
                     }
-                    case "add":
+                    case "add_argument":
                     {
-                        var arguments = line.Split(" ");
-                        actions.Add(new AddMethodParametersAction(arguments[2], arguments[3], arguments[4].Split(",")));
+                        var match = Regex.Match(line,
+                            @"add_argument method:((?:[a-z]*\.)*[a-z]*)\.([a-z0-9_]*) ((?:(?:default_value|expression)\:\'?([^\']+)\'? \d,?)*)",
+                            RegexOptions.IgnoreCase);
+
+                        var args = match.Groups;
+
+                        actions.Add(new AddMethodParametersAction(
+                            args[1].Value, 
+                            args[2].Value, 
+                            args[3].Value
+                                .Split(",")
+                                .Select(arg =>
+                                {
+                                    var groups = Regex.Match(arg, @"'?([^']*)'? (\d)", RegexOptions.IgnoreCase)
+                                        .Groups;
+
+                                    return (groups[1].Value, int.Parse(groups[2].Value));
+                                })));
+                        break;
+                    }
+                    case "reorder_arguments":
+                    {
+                        var match = Regex.Match(line,
+                            @"reorder_arguments method:((?:[a-z]*\.)*[a-z]*)\.([a-z0-9_]*) ((?:(?:\d+),?)*)",
+                            RegexOptions.IgnoreCase);
+
+                        var args = match.Groups;
+
+                        actions.Add(new ReorderMethodParametersAction(
+                            args[1].Value,
+                            args[2].Value,
+                            args[3].Value
+                                .Split(",")
+                                .Select(int.Parse)
+                                .ToArray()));
                         break;
                     }
                     case "replace_constructor":

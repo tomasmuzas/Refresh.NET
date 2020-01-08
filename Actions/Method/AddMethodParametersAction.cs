@@ -10,12 +10,12 @@ namespace LibAdapter.Actions.Method
         
         private string MethodName { get; }
         
-        private IEnumerable<string> ArgumentTypes { get; }
+        private IEnumerable<(string, int)> ArgumentTypes { get; }
 
         public AddMethodParametersAction(
             string fullTypeName,
             string methodName,
-            IEnumerable<string> argumentTypes)
+            IEnumerable<(string,int)> argumentTypes)
         {
             FullTypeName = fullTypeName;
             MethodName = methodName;

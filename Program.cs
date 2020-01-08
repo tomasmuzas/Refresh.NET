@@ -19,8 +19,8 @@ namespace LibAdapter
                 .ParseFile("C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapter\\Changes.txt")
                 .ToList();
 
-            var projectPath = "C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapterTestSolution";
-            var mainDllPath = "C:/Users/Tomas/Desktop/Projektinis/LibAdapterTestSolution/bin/Debug/netcoreapp3.0/LibAdapterTestSolution.dll";
+            var projectPath = "C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapter";
+            var mainDllPath = "C:/Users/Tomas/Desktop/Projektinis/LibAdapter/bin/Debug/netcoreapp2.2/LibAdapter.dll";
 
             var references = Assembly.LoadFile(mainDllPath).GetReferencedAssemblies();
 
@@ -31,17 +31,14 @@ namespace LibAdapter
             foreach (var name in references)
             {
                 Assembly assembly;
-                if (name.Name == "TestLibrary")
-                {
-                    assembly = Assembly.LoadFile("C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapterTestSolution\\bin\\Debug\\netcoreapp3.0\\TestLibrary.dll");
-                }
-                else if (name.Name == "Newtonsoft.Json")
-                {
-                    assembly = Assembly.LoadFile("C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapterTestSolution\\bin\\Debug\\netcoreapp3.0\\Newtonsoft.Json.dll");
-                }
-                else
+
+                try
                 {
                     assembly = Assembly.Load(name);
+                }
+                catch
+                {
+                    assembly = Assembly.LoadFile($"C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapter\\bin\\Debug\\netcoreapp2.2\\{name.Name}.dll");
                 }
 
                 compilation = compilation.AddReferences(MetadataReference.CreateFromFile(assembly.Location));
@@ -58,14 +55,17 @@ namespace LibAdapter
 
             compilation = compilation.AddSyntaxTrees(trees);
             var maps = new List<SyntaxTypeMap>();
+
             foreach (var tree in trees)
             {
                 var map = new SyntaxTypeMap(tree);
                 map.PopulateFromCompilation(compilation);
                 maps.Add(map);
             }
+
             #endregion
-            
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             foreach (var action in actions)
             {
                 foreach (var map in maps)
@@ -73,8 +73,8 @@ namespace LibAdapter
                     map.Root = (CompilationUnitSyntax) action.ToVisitor(map).Visit(map.Root);
                 }
             }
-
-            
+            watch.Stop();
+            Console.WriteLine("Refactoring took:" + watch.ElapsedMilliseconds);
 
             foreach (var map in maps)
             {
