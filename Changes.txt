@@ -1,4 +1,4 @@
-rename type LibAdapter.SyntaxTypeMap MajesticTypeMap
+rename type:LibAdapter.SyntaxTypeMap MajesticTypeMap
 add_argument method:string.Split expression:'true' 2
 reorder_arguments method:string.Split 2,1
 replace_constructor LibAdapter.Actions.Method.RenameMethodAction string,string,string string,string,string,bool

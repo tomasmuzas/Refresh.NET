@@ -5,8 +5,6 @@ using System.Text.RegularExpressions;
 using LibAdapter.Actions;
 using LibAdapter.Actions.Class;
 using LibAdapter.Actions.Method;
-using LibAdapter.Actions.Namespace;
-using LibAdapter.Visitors.Class;
 
 namespace LibAdapter
 {
@@ -22,9 +20,29 @@ namespace LibAdapter
                 {
                     case "rename":
                     {
-                        var arguments = line.Split(" ");
-                        ParseRename(arguments, actions);
-                        break;
+                        var match = Regex.Match(line,
+                            @"rename (type|method|member):((?:[a-z]*\.)*[a-z]*)\.([a-z0-9_]*)? ([a-z0-9_]*)",
+                            RegexOptions.IgnoreCase);
+
+                        var args = match.Groups;
+                        switch (args[1].Value)
+                        {
+                            case "method":
+                            {
+                                actions.Add(new RenameMethodAction(args[2].Value, args[3].Value, args[4].Value));
+                                break;
+                            }
+                            case "type":
+                            {
+                                actions.Add(new RenameClassAction(args[2].Value + "." + args[3].Value, args[4].Value));
+                                break;
+                            }
+                            case "member":
+                            {
+                                break;
+                            }
+                        }
+                            break;
                     }
                     case "add_argument":
                     {
@@ -95,26 +113,9 @@ namespace LibAdapter
             return actions;
         }
 
-        private static void ParseRename(string[] arguments, List<IAction> actions)
+        private static void ParseRename(string action, string[] arguments, List<IAction> actions)
         {
-            switch (arguments[1])
-            {
-                case "method":
-                {
-                    actions.Add(new RenameMethodAction(arguments[2], arguments[3], arguments[4]));
-                    break;
-                }
-                case "type":
-                {
-                    actions.Add(new RenameClassAction(arguments[2], arguments[3]));
-                    break;
-                }
-                case "namespace":
-                {
-                    actions.Add(new RenameNamespaceAction(arguments[2], arguments[3]));
-                    break;
-                }
-            }
+
         }
     }
 }
