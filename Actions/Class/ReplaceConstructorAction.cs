@@ -18,7 +18,7 @@ namespace LibAdapter.Actions.Class
             NewArgumentTypes = newArgumentTypes;
         }
 
-        public CSharpSyntaxRewriter ToVisitor(SyntaxTypeMap map)
+        public CSharpSyntaxRewriter ToVisitor(RefactoringContext map)
         {
             return new ReplaceMethodVisitor(map, FullTypeName, "ctor", null, OldArgumentTypes, NewArgumentTypes);
         }

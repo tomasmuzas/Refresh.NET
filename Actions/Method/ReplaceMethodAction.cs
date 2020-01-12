@@ -29,7 +29,7 @@ namespace LibAdapter.Actions.Method
             NewMethodName = newMethodName;
         }
 
-        public CSharpSyntaxRewriter ToVisitor(SyntaxTypeMap map)
+        public CSharpSyntaxRewriter ToVisitor(RefactoringContext map)
         {
             return new ReplaceMethodVisitor(map, FullTypeName, OldMethodName,NewMethodName, OldArgumentTypes, NewArgumentTypes);
         }

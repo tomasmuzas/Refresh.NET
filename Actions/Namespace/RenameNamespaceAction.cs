@@ -16,7 +16,7 @@ namespace LibAdapter.Actions.Namespace
             NewNamespace = newNamespace;
         }
 
-        public CSharpSyntaxRewriter ToVisitor(SyntaxTypeMap map)
+        public CSharpSyntaxRewriter ToVisitor(RefactoringContext map)
         {
             return new RenameNamespaceVisitor(map, OldNamespace, NewNamespace);
         }

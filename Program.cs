@@ -54,12 +54,12 @@ namespace LibAdapter
             }
 
             compilation = compilation.AddSyntaxTrees(trees);
-            var maps = new List<SyntaxTypeMap>();
+            var maps = new List<RefactoringContext>();
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
             foreach (var tree in trees)
             {
-                var map = new SyntaxTypeMap(tree);
+                var map = new RefactoringContext(tree);
                 map.PopulateFromCompilation(compilation);
                 maps.Add(map);
             }

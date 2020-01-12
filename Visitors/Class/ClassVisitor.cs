@@ -5,9 +5,9 @@ namespace LibAdapter.Visitors.Class
 {
     public class ClassVisitor : CSharpSyntaxRewriter
     {
-        protected SyntaxTypeMap Map { get; }
+        protected RefactoringContext Map { get; }
 
-        public ClassVisitor(SyntaxTypeMap map)
+        public ClassVisitor(RefactoringContext map)
         {
             Map = map;
         }

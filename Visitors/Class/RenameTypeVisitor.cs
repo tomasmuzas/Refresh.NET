@@ -10,7 +10,7 @@ namespace LibAdapter.Visitors.Class
 
         private string NewName { get; }
 
-        public RenameTypeVisitor(SyntaxTypeMap map, string fullTypeName, string newName) : base(map)
+        public RenameTypeVisitor(RefactoringContext map, string fullTypeName, string newName) : base(map)
         {
             FullTypeName = fullTypeName;
             NewName = newName;

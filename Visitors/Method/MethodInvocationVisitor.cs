@@ -5,9 +5,9 @@ namespace LibAdapter.Visitors.Method
 {
     public class MethodInvocationVisitor: CSharpSyntaxRewriter
     {
-        protected SyntaxTypeMap Map { get;}
+        protected RefactoringContext Map { get;}
 
-        public MethodInvocationVisitor(SyntaxTypeMap map)
+        public MethodInvocationVisitor(RefactoringContext map)
         {
             Map = map;
         }

@@ -4,6 +4,6 @@ namespace LibAdapter.Actions
 {
     public interface IAction
     {
-        CSharpSyntaxRewriter ToVisitor(SyntaxTypeMap map);
+        CSharpSyntaxRewriter ToVisitor(RefactoringContext map);
     }
 }
