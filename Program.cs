@@ -16,11 +16,11 @@ namespace LibAdapter
         {
             #region Preparation
             var actions = ChangeFileParser
-                .ParseFile("C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapter\\Changes.txt")
+                .ParseFile(args[0])
                 .ToList();
 
-            var projectPath = "C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapter";
-            var mainDllPath = "C:/Users/Tomas/Desktop/Projektinis/LibAdapter/bin/Debug/netcoreapp2.2/LibAdapter.dll";
+            var projectPath = args[1];
+            var mainDllPath = args[2];
 
             var references = Assembly.LoadFile(mainDllPath).GetReferencedAssemblies();
 
@@ -38,7 +38,7 @@ namespace LibAdapter
                 }
                 catch
                 {
-                    assembly = Assembly.LoadFile($"C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapter\\bin\\Debug\\netcoreapp2.2\\{name.Name}.dll");
+                    assembly = Assembly.LoadFile(args[3]);
                 }
 
                 compilation = compilation.AddReferences(MetadataReference.CreateFromFile(assembly.Location));
