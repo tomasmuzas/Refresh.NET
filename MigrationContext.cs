@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LibAdapter
 {
-    public class RefactoringContext
+    public class MigrationContext
     {
         private readonly Dictionary<string, MethodInfo> methodMap =
             new Dictionary<string, MethodInfo>();
@@ -18,7 +18,7 @@ namespace LibAdapter
 
         public CompilationUnitSyntax Root { get; set; }
 
-        public RefactoringContext(SyntaxTree tree)
+        public MigrationContext(SyntaxTree tree)
         {
             Tree = tree;
             Root = tree.GetCompilationUnitRoot();

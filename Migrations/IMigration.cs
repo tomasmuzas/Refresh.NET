@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace LibAdapter
+namespace LibAdapter.Migrations
 {
     public interface IMigration
     {
