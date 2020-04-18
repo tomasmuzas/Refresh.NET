@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibAdapter", "LibAdapter.csproj", "{05BFCADA-F42D-448D-B0EB-B3C3E8197945}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "src/LibAdapter", "src/LibAdapter.csproj", "{05BFCADA-F42D-448D-B0EB-B3C3E8197945}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

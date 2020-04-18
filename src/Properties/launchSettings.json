@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LibAdapter": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapter\\Changes.txt C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapter C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapter\\bin\\Debug\\netcoreapp2.2\\LibAdapter.dll"
+    }
+  }
+}
