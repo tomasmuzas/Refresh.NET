@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LibAdapter.Visitors.Method;
+using LibAdapter.Visitors.MethodSignatureOperations;
 using Microsoft.CodeAnalysis;
 
 namespace LibAdapter.Migrations.MethodSignatureOperations

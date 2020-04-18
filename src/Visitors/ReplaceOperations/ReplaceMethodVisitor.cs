@@ -1,11 +1,10 @@
 ﻿using System.Linq;
 using LibAdapter.Migrations;
-using LibAdapter.Visitors.Method;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace LibAdapter.Visitors.Class
+namespace LibAdapter.Visitors.ReplaceOperations
 {
     public class ReplaceMethodVisitor : ClassVisitor
     {

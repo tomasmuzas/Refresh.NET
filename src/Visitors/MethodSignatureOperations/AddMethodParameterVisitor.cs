@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace LibAdapter.Visitors.Method
+namespace LibAdapter.Visitors.MethodSignatureOperations
 {
     public class AddMethodParameterVisitor : MethodInvocationVisitor
     {

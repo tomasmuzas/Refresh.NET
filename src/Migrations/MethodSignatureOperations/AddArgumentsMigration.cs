@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LibAdapter.Visitors.Method;
+using LibAdapter.Visitors.MethodSignatureOperations;
 using Microsoft.CodeAnalysis;
 
 namespace LibAdapter.Migrations.MethodSignatureOperations

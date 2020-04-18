@@ -1,4 +1,4 @@
-﻿using LibAdapter.Visitors.Method;
+﻿using LibAdapter.Visitors.RenameOperations;
 using Microsoft.CodeAnalysis;
 
 namespace LibAdapter.Migrations.RenameOperations

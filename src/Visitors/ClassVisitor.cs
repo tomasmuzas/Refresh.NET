@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace LibAdapter.Visitors.Class
+namespace LibAdapter.Visitors
 {
     public class ClassVisitor : CSharpSyntaxRewriter
     {

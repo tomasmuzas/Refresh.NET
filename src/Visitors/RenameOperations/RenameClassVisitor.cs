@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace LibAdapter.Visitors.Class
+namespace LibAdapter.Visitors.RenameOperations
 {
     public class RenameClassVisitor : ClassVisitor
     {

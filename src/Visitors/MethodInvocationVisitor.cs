@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace LibAdapter.Visitors.Method
+namespace LibAdapter.Visitors
 {
     public class MethodInvocationVisitor: CSharpSyntaxRewriter
     {
