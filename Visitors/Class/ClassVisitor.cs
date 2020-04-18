@@ -5,16 +5,16 @@ namespace LibAdapter.Visitors.Class
 {
     public class ClassVisitor : CSharpSyntaxRewriter
     {
-        protected MigrationContext Map { get; }
+        protected MigrationContext Context { get; }
 
-        public ClassVisitor(MigrationContext map)
+        public ClassVisitor(MigrationContext context)
         {
-            Map = map;
+            Context = context;
         }
 
         protected bool MatchesClassType(IdentifierNameSyntax identifier, string fullTypeName)
         {
-            var identifierInfo = Map.GetIdentifierInfo(identifier);
+            var identifierInfo = Context.GetIdentifierInfo(identifier);
             return identifierInfo?.TypeName == fullTypeName;
         }
     }

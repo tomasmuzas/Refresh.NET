@@ -19,12 +19,12 @@ namespace LibAdapter.Visitors.Class
         private string[] NewArgumentTypes { get; }
 
         public ReplaceMethodVisitor(
-            MigrationContext map,
+            MigrationContext context,
             string fullTypeName,
             string oldMethodName,
             string newMethodName,
             string[] oldArgumentTypes,
-            string[] newArgumentTypes) : base(map)
+            string[] newArgumentTypes) : base(context)
         {
             OldArgumentTypes = oldArgumentTypes;
             NewArgumentTypes = newArgumentTypes;
@@ -53,7 +53,7 @@ namespace LibAdapter.Visitors.Class
             node = (InvocationExpressionSyntax) base.VisitInvocationExpression(node);
             if (MethodMatches(node))
             {
-                node = (InvocationExpressionSyntax) new RenameMethodVisitor(Map, FullTypeName, OldMethodName, NewMethodName)
+                node = (InvocationExpressionSyntax) new RenameMethodVisitor(Context, FullTypeName, OldMethodName, NewMethodName)
                     .VisitInvocationExpression(node);
 
                 node = node.WithArgumentList(
@@ -68,7 +68,7 @@ namespace LibAdapter.Visitors.Class
 
         private bool MethodMatches(ExpressionSyntax node)
         {
-            var info = Map.GetMethodInfo(node);
+            var info = Context.GetMethodInfo(node);
             return info.TypeName == FullTypeName
                    && info.MethodName == OldMethodName
                    && ArgumentsMatch(info.Arguments, OldArgumentTypes);
@@ -82,7 +82,7 @@ namespace LibAdapter.Visitors.Class
                     var newIdentifier = IdentifierName(t);
                     newIdentifier = (IdentifierNameSyntax) new AnnotationVisitor().Visit(newIdentifier);
 
-                    Map.AddNewIdentifier(newIdentifier, new IdentifierInfo
+                    Context.AddNewIdentifier(newIdentifier, new IdentifierInfo
                     {
                         TypeName = t
                     });

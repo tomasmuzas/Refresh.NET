@@ -4,6 +4,6 @@ namespace LibAdapter.Migrations
 {
     public interface IMigration
     {
-        SyntaxTree Apply(SyntaxTree intialAST, MigrationContext context);
+        SyntaxTree Apply(SyntaxTree initialAST, MigrationContext context);
     }
 }
