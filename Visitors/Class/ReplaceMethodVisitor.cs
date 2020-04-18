@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using LibAdapter.Migrations;
 using LibAdapter.Visitors.Method;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
