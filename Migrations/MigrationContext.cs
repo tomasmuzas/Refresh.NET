@@ -14,7 +14,7 @@ namespace LibAdapter.Migrations
         private readonly Dictionary<string, IdentifierInfo> identifierMap =
             new Dictionary<string, IdentifierInfo>();
 
-        public void PopulateFromCompilation(CSharpCompilation compilation, SyntaxTree tree)
+        public void Populate(CSharpCompilation compilation, SyntaxTree tree)
         {
             var root = tree.GetCompilationUnitRoot();
             var semanticModel = compilation.GetSemanticModel(tree);
