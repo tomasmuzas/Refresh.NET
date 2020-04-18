@@ -19,7 +19,7 @@ namespace LibAdapter.Visitors.Class
         private string[] NewArgumentTypes { get; }
 
         public ReplaceMethodVisitor(
-            RefactoringContext map,
+            MigrationContext map,
             string fullTypeName,
             string oldMethodName,
             string newMethodName,

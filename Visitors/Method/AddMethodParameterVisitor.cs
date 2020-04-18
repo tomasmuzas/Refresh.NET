@@ -12,7 +12,7 @@ namespace LibAdapter.Visitors.Method
         private IEnumerable<(string typeName, int position)> Arguments { get; }
 
         public AddMethodParameterVisitor(
-            RefactoringContext map,
+            MigrationContext map,
             string fullTypeName,
             string MethodName,
             IEnumerable<(string, int)> arguments) : base(map)

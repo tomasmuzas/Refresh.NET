@@ -14,7 +14,7 @@ namespace LibAdapter.Visitors.Method
 
         private int[] ArgumentOrder { get; }
 
-        public ReorderMethodArgumentsVisitor(RefactoringContext map, string fullTypeName, string methodName, int[] argumentOrder) : base(map)
+        public ReorderMethodArgumentsVisitor(MigrationContext map, string fullTypeName, string methodName, int[] argumentOrder) : base(map)
         {
             FullTypeName = fullTypeName;
             MethodName = methodName;

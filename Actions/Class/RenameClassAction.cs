@@ -15,7 +15,7 @@ namespace LibAdapter.Actions.Class
             NewName = newName;
         }
 
-        public CSharpSyntaxRewriter ToVisitor(RefactoringContext map)
+        public CSharpSyntaxRewriter ToVisitor(MigrationContext map)
         {
             return new RenameTypeVisitor(map, FullTypeName, NewName);
         }

@@ -6,13 +6,13 @@ namespace LibAdapter.Visitors.Namespace
 {
     public class RenameNamespaceVisitor : CSharpSyntaxRewriter
     {
-        protected RefactoringContext Map { get; }
+        protected MigrationContext Map { get; }
 
         private string OldNamespace { get; }
         
         private string NewNamespace { get; }
 
-        public RenameNamespaceVisitor(RefactoringContext map, string oldNamespace, string newNamespace)
+        public RenameNamespaceVisitor(MigrationContext map, string oldNamespace, string newNamespace)
         {
             Map = map;
             OldNamespace = oldNamespace;

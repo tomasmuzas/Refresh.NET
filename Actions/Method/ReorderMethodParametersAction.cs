@@ -22,7 +22,7 @@ namespace LibAdapter.Actions.Method
             ArgumentOrder = argumentOrder;
         }
 
-        public CSharpSyntaxRewriter ToVisitor(RefactoringContext map)
+        public CSharpSyntaxRewriter ToVisitor(MigrationContext map)
         {
             return new ReorderMethodArgumentsVisitor(map, FullTypeName, MethodName, ArgumentOrder);
         }

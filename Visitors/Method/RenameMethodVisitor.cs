@@ -13,7 +13,7 @@ namespace LibAdapter.Visitors.Method
         private string NewMethodName { get; }
 
         public RenameMethodVisitor(
-            RefactoringContext map, 
+            MigrationContext map, 
             string fullTypeName, 
             string oldMethodName,
             string newMethodName) : base(map)

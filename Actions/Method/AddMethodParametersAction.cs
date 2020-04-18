@@ -22,7 +22,7 @@ namespace LibAdapter.Actions.Method
             ArgumentTypes = argumentTypes;
         }
 
-        public CSharpSyntaxRewriter ToVisitor(RefactoringContext map)
+        public CSharpSyntaxRewriter ToVisitor(MigrationContext map)
         {
             return new AddMethodParameterVisitor(map, FullTypeName, MethodName, ArgumentTypes);
         }
