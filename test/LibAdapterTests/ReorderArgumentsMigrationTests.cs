@@ -5,7 +5,7 @@ using Xunit;
 
 namespace LibAdapterTests
 {
-    public class AddArgumentMigrationTests : MigrationTestBase
+    public class ReorderArgumentsMigrationTests : MigrationTestBase
     {
         [Fact]
         public void Apply_TransformsSourceCodeCorrectly()
@@ -15,7 +15,7 @@ namespace LibAdapterTests
             {
                 public class TestClass
                 {
-                    public void TestMethod(){}
+                    public void TestMethod(string name, int age, string something){}
                 }
 
                 public class Program
@@ -23,7 +23,7 @@ namespace LibAdapterTests
                     public void Main()
                     {
                         var instance = new TestClass();
-                        instance.TestMethod();
+                        instance.TestMethod(""name"", 1, ""test"");
                     }
                 }
             }";
@@ -33,7 +33,7 @@ namespace LibAdapterTests
             {
                 public class TestClass
                 {
-                    public void TestMethod(){}
+                    public void TestMethod(string name, int age, string something){}
                 }
 
                 public class Program
@@ -41,27 +41,19 @@ namespace LibAdapterTests
                     public void Main()
                     {
                         var instance = new TestClass();
-                        instance.TestMethod(new object());
+                        instance.TestMethod(""test"",1,""name"");
                     }
                 }
             }";
 
             var refactoredAst = PerformMigration(
-                new AddArgumentsMigration(
+                new ReorderArgumentsMigration(
                     new Method
                     {
                         Type = "Test.TestClass",
                         Name = "TestMethod"
                     },
-                    new List<(Argument argument, int position)>
-                    {
-                        (
-                        new Argument
-                        {
-                            DefaultValueExpression = "new object()"
-                        },
-                        1)
-                    }), 
+                    new List<int> {3, 2, 1}), 
                 source);
 
             Assert.Equal(expected, refactoredAst.ToString());

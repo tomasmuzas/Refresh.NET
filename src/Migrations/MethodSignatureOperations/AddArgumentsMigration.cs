@@ -3,7 +3,7 @@ using System.Linq;
 using LibAdapter.Visitors.Method;
 using Microsoft.CodeAnalysis;
 
-namespace LibAdapter.Migrations
+namespace LibAdapter.Migrations.MethodSignatureOperations
 {
     public class AddArgumentsMigration : IMigration
     {
