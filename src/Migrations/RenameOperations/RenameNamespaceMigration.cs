@@ -1,7 +1,7 @@
 ﻿using LibAdapter.Visitors.Namespace;
 using Microsoft.CodeAnalysis;
 
-namespace LibAdapter.Migrations
+namespace LibAdapter.Migrations.RenameOperations
 {
     public class RenameNamespaceMigration : IMigration
     {

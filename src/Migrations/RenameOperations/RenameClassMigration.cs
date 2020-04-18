@@ -1,22 +1,22 @@
-﻿using LibAdapter.Visitors.Method;
+﻿using LibAdapter.Visitors.Class;
 using Microsoft.CodeAnalysis;
 
-namespace LibAdapter.Migrations
+namespace LibAdapter.Migrations.RenameOperations
 {
-    public class RenameMethodMigration : IMigration
+    public class RenameClassMigration : IMigration
     {
-        private readonly Method _method;
+        private readonly string _type;
         private readonly string _newName;
 
-        public RenameMethodMigration(Method method, string newName)
+        public RenameClassMigration(string type, string newName)
         {
-            _method = method;
+            _type = type;
             _newName = newName;
         }
 
         public SyntaxTree Apply(SyntaxTree initialAST, MigrationContext context)
         {
-            var visitor = new RenameMethodVisitor(context, _method, _newName);
+            var visitor = new RenameClassVisitor(context, _type, _newName);
             var newAst = visitor.Visit(initialAST.GetRoot());
 
             return newAst.SyntaxTree;
