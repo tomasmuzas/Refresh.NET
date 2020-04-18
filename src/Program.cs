@@ -7,7 +7,7 @@ using LibAdapter.Visitors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace LibAdapter
+namespace LibAdapter 
 {
     class Program
     {
