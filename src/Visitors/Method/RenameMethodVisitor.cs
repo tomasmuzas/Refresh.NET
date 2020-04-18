@@ -15,12 +15,11 @@ namespace LibAdapter.Visitors.Method
 
         public RenameMethodVisitor(
             MigrationContext map, 
-            string fullTypeName, 
-            string oldMethodName,
+            Migrations.Method method,
             string newMethodName) : base(map)
         {
-            FullTypeName = fullTypeName;
-            OldMethodName = oldMethodName;
+            FullTypeName = method.Type;
+            OldMethodName = method.Name;
             NewMethodName = newMethodName;
         }
 

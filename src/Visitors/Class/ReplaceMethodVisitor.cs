@@ -54,8 +54,9 @@ namespace LibAdapter.Visitors.Class
             node = (InvocationExpressionSyntax) base.VisitInvocationExpression(node);
             if (MethodMatches(node))
             {
-                node = (InvocationExpressionSyntax) new RenameMethodVisitor(Context, FullTypeName, OldMethodName, NewMethodName)
-                    .VisitInvocationExpression(node);
+                // TODO fix it
+                //node = (InvocationExpressionSyntax) new RenameMethodVisitor(Context, FullTypeName, OldMethodName, NewMethodName)
+                //    .VisitInvocationExpression(node);
 
                 node = node.WithArgumentList(
                     CreateArgumentList(

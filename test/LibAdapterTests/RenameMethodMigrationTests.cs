@@ -3,7 +3,7 @@ using Xunit;
 
 namespace LibAdapterTests
 {
-    public class RenameClassMigrationTests : MigrationTestBase
+    public class RenameMethodMigrationTests : MigrationTestBase
     {
         [Fact]
         public void Apply_TransformsSourceCodeCorrectly()
@@ -13,11 +13,16 @@ namespace LibAdapterTests
             {
                 public class TestClass
                 {
+                    public void TestMethod(){}
                 }
 
                 public class Program
                 {
-                    var instance = new TestClass();
+                    public void Main()
+                    {
+                        var instance = new TestClass();
+                        instance.TestMethod();
+                    }
                 }
             }";
 
@@ -26,16 +31,27 @@ namespace LibAdapterTests
             {
                 public class TestClass
                 {
+                    public void TestMethod(){}
                 }
 
                 public class Program
                 {
-                    var instance = new NewClass();
+                    public void Main()
+                    {
+                        var instance = new TestClass();
+                        instance.NewMethod();
+                    }
                 }
             }";
 
             var refactoredAst = PerformMigration(
-                new RenameClassMigration("Test.TestClass", "NewClass"),
+                new RenameMethodMigration(
+                    new Method
+                    {
+                        Type = "Test.TestClass",
+                        Name = "TestMethod"
+                    }, 
+                    "NewMethod"), 
                 source);
 
             Assert.Equal(expected, refactoredAst.ToString());
