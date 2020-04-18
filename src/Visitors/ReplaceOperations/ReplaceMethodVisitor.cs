@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using LibAdapter.Migrations;
+using LibAdapter.Visitors.RenameOperations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -53,9 +54,11 @@ namespace LibAdapter.Visitors.ReplaceOperations
             node = (InvocationExpressionSyntax) base.VisitInvocationExpression(node);
             if (MethodMatches(node))
             {
-                // TODO fix it
-                //node = (InvocationExpressionSyntax) new RenameMethodVisitor(Context, FullTypeName, OldMethodName, NewMethodName)
-                //    .VisitInvocationExpression(node);
+                node = (InvocationExpressionSyntax)new RenameMethodVisitor(
+                        Context,
+                        new Method { Type = FullTypeName, Name = OldMethodName},
+                        NewMethodName)
+                    .VisitInvocationExpression(node);
 
                 node = node.WithArgumentList(
                     CreateArgumentList(
