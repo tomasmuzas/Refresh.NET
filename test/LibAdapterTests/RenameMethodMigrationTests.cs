@@ -6,7 +6,7 @@ namespace LibAdapterTests
     public class RenameMethodMigrationTests : MigrationTestBase
     {
         [Fact]
-        public void Apply_TransformsSourceCodeCorrectly()
+        public void Apply_RenamesMethodInvocations()
         {
             var source = @"
             namespace Test

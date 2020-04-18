@@ -6,7 +6,7 @@ namespace LibAdapterTests
     public class CompositeMigrationTest : MigrationTestBase
     {
         [Fact]
-        public void Apply_TransformsSourceCodeCorrectly()
+        public void Apply_AppliesAllMigrations_InOrder()
         {
             var source = @"
             namespace Test
