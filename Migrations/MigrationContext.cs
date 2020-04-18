@@ -14,21 +14,12 @@ namespace LibAdapter.Migrations
         private readonly Dictionary<string, IdentifierInfo> identifierMap =
             new Dictionary<string, IdentifierInfo>();
 
-        private SyntaxTree Tree { get; }
-
-        public CompilationUnitSyntax Root { get; set; }
-
-        public MigrationContext(SyntaxTree tree)
+        public void PopulateFromCompilation(CSharpCompilation compilation, SyntaxTree tree)
         {
-            Tree = tree;
-            Root = tree.GetCompilationUnitRoot();
-        }
+            var root = tree.GetCompilationUnitRoot();
+            var semanticModel = compilation.GetSemanticModel(tree);
 
-        public void PopulateFromCompilation(CSharpCompilation compilation)
-        {
-            var semanticModel = compilation.GetSemanticModel(Tree);
-
-            var types = Root.DescendantNodesAndSelf().OfType<ObjectCreationExpressionSyntax>().ToList();
+            var types = root.DescendantNodesAndSelf().OfType<ObjectCreationExpressionSyntax>().ToList();
             foreach (var type in types)
             {
                 var containingType = semanticModel.GetTypeInfo(type).Type;
@@ -49,7 +40,7 @@ namespace LibAdapter.Migrations
                 methodMap.Add(MakeKey(type), constructorInfo);
             }
 
-            var invocations = Root.DescendantNodesAndSelf().OfType<InvocationExpressionSyntax>().ToList();
+            var invocations = root.DescendantNodesAndSelf().OfType<InvocationExpressionSyntax>().ToList();
             foreach (var invocation in invocations)
             {
                 var symInfo = semanticModel.GetSymbolInfo(invocation);
@@ -74,7 +65,7 @@ namespace LibAdapter.Migrations
                 methodMap.Add(MakeKey(invocation), methodInfo);
             }
 
-            var identifiers = Root.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>().ToList();
+            var identifiers = root.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>().ToList();
 
             foreach (var identifier in identifiers)
             {

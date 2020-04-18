@@ -51,14 +51,16 @@ namespace LibAdapter
             compilation = compilation.AddSyntaxTrees(trees);
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
+
             foreach (var tree in trees)
             {
-                var map = new MigrationContext(tree);
-                map.PopulateFromCompilation(compilation);
+                var context = new MigrationContext();
+                context.Populate(compilation, tree);
 
-                var ast = new MyMigration().Apply(map.Root.SyntaxTree, map);
+                var ast = new MyMigration().Apply(tree, context);
                 Console.WriteLine(ast.ToString());
             }
+
             watch.Stop();
             Console.WriteLine("Refactoring took:" + watch.ElapsedMilliseconds);
         }
