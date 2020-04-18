@@ -19,8 +19,7 @@ namespace LibAdapterTests
                 {
                     var instance = new TestClass();
                 }
-            }
-            ";
+            }";
 
             var expected = @"
             namespace Test
@@ -33,8 +32,7 @@ namespace LibAdapterTests
                 {
                     var instance = new NewClass();
                 }
-            }
-            ";
+            }";
 
             var ast = PerformMigration(
                 new RenameClassMigration("Test.TestClass", "NewClass"),
