@@ -13,10 +13,10 @@ namespace LibAdapter.Visitors.Method
         private IEnumerable<(string typeName, int position)> Arguments { get; }
 
         public AddMethodParameterVisitor(
-            MigrationContext map,
+            MigrationContext context,
             string fullTypeName,
             string MethodName,
-            IEnumerable<(string, int)> arguments) : base(map)
+            IEnumerable<(string, int)> arguments) : base(context)
         {
             FullTypeName = fullTypeName;
             this.MethodName = MethodName;

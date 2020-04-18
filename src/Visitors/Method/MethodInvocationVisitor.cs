@@ -6,16 +6,16 @@ namespace LibAdapter.Visitors.Method
 {
     public class MethodInvocationVisitor: CSharpSyntaxRewriter
     {
-        protected MigrationContext Map { get;}
+        protected MigrationContext Context { get;}
 
-        public MethodInvocationVisitor(MigrationContext map)
+        public MethodInvocationVisitor(MigrationContext context)
         {
-            Map = map;
+            Context = context;
         }
 
         protected bool InvocationMatches(InvocationExpressionSyntax invocation, string fullTypeName, string methodName)
         {
-            var methodInfo = Map.GetMethodInfo(invocation);
+            var methodInfo = Context.GetMethodInfo(invocation);
             return methodInfo.TypeName == fullTypeName && methodInfo.MethodName == methodName;
         }
     }
