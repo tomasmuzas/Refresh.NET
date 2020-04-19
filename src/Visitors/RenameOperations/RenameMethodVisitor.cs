@@ -27,7 +27,7 @@ namespace LibAdapter.Visitors.RenameOperations
         {
             if (InvocationMatches(invocation, FullTypeName, OldMethodName))
             {
-                var oldIdentifier = GetMethodIdentifier(invocation);
+                var oldIdentifier = GetMethodIdentifier(invocation.Expression);
 
                 var newIdentifier = IdentifierName(NewMethodName);
                 newIdentifier = oldIdentifier.CopyAnnotationsTo(newIdentifier);

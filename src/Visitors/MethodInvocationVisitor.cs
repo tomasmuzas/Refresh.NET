@@ -21,9 +21,9 @@ namespace LibAdapter.Visitors
             return containingType == fullTypeName && methodIdentifier.ToString() == methodName;
         }
 
-        public IdentifierNameSyntax GetMethodIdentifier(InvocationExpressionSyntax invocation)
+        public IdentifierNameSyntax GetMethodIdentifier(ExpressionSyntax invocation)
         {
-            var nodes = invocation.Expression
+            var nodes = invocation
                 .DescendantNodes()
                 .OfType<IdentifierNameSyntax>().ToList();
             return nodes.LastOrDefault() ?? null;

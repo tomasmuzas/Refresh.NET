@@ -9,7 +9,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace LibAdapter.Visitors.ReplaceOperations
 {
-    public class ReplaceMethodVisitor : CSharpSyntaxRewriter
+    public class ReplaceMethodVisitor : MethodInvocationVisitor
     {
         private readonly MigrationContext _context;
         private readonly Method _oldMethod;
@@ -18,7 +18,7 @@ namespace LibAdapter.Visitors.ReplaceOperations
         public ReplaceMethodVisitor(
             MigrationContext context,
             Method oldMethod,
-            Method newMethod)
+            Method newMethod) : base(context)
         {
             _context = context;
             _oldMethod = oldMethod;
@@ -63,10 +63,10 @@ namespace LibAdapter.Visitors.ReplaceOperations
 
         private bool MethodMatches(ExpressionSyntax node)
         {
-            var info = _context.GetMethodInfo(node);
-            return info.TypeName == _oldMethod.Type
-                   && info.MethodName == _oldMethod.Name
-                   && ArgumentsMatch(info.Arguments, _oldMethod.Arguments);
+            var type = _context.GetNodeContainingClassType(node);
+            return type == _oldMethod.Type
+                   && GetMethodIdentifier(node).ToString() == _oldMethod.Name;
+            //&& ArgumentsMatch(info.Arguments, _oldMethod.Arguments);
         }
 
         private ArgumentListSyntax CreateArgumentList(IEnumerable<Argument> arguments, SyntaxTriviaList leadingTrivia, SyntaxTriviaList trailingTrivia)
