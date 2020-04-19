@@ -10,7 +10,6 @@ namespace LibAdapter.Visitors.RenameOperations
     {
         private readonly MigrationContext _context;
         private string FullTypeName { get; }
-
         private string NewName { get; }
 
         public RenameClassVisitor(MigrationContext context, string fullTypeName, string newName)
@@ -24,15 +23,14 @@ namespace LibAdapter.Visitors.RenameOperations
         {
             node = (IdentifierNameSyntax) base.VisitIdentifierName(node);
 
-            var nodeStr = node.Parent.ToString();
-
-            if (node != null && _context.GetNodeType(node) == FullTypeName)
+            if (_context.GetNodeType(node) == FullTypeName)
             {
                 node = node.WithIdentifier(SyntaxFactory.Identifier(NewName)
                     .WithTrailingTrivia(node.Identifier.TrailingTrivia)
                     .WithLeadingTrivia(node.Identifier.LeadingTrivia));
 
                 node = node.CopyAnnotationsTo(node);
+
                 var parts = FullTypeName.Split(".");
                 var ns = string.Join(".", parts.Take(parts.Length - 1));
                 var newType = ns + "." + NewName;
