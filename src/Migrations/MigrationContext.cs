@@ -12,9 +12,6 @@ namespace LibAdapter.Migrations
         
         private readonly Dictionary<string, string> nodeTypes = new Dictionary<string, string>();
 
-        private readonly Dictionary<string, MethodInfo> methodMap =
-            new Dictionary<string, MethodInfo>();
-
         private readonly Dictionary<string, IdentifierInfo> identifierMap =
             new Dictionary<string, IdentifierInfo>();
 
@@ -53,11 +50,6 @@ namespace LibAdapter.Migrations
         {
             containingNodeTypes.Remove(MakeKey(node));
             containingNodeTypes.Add(MakeKey(node), newContainingType);
-        }
-
-        public MethodInfo GetMethodInfo(ExpressionSyntax method)
-        {
-            return methodMap[MakeKey(method)];
         }
 
         public void AddNewIdentifier(IdentifierNameSyntax identifier, IdentifierInfo info)
