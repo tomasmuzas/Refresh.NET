@@ -60,12 +60,6 @@ namespace LibAdapter.Migrations
             return methodMap[MakeKey(method)];
         }
 
-        public IdentifierInfo GetIdentifierInfo(IdentifierNameSyntax identifier)
-        {
-            identifierMap.TryGetValue(MakeKey(identifier), out var value);
-            return value;
-        }
-
         public void AddNewIdentifier(IdentifierNameSyntax identifier, IdentifierInfo info)
         {
             identifierMap.Add(MakeKey(identifier), info);
