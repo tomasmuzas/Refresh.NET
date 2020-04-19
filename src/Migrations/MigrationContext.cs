@@ -26,32 +26,11 @@ namespace LibAdapter.Migrations
             {
                 var symbolInfo = semanticModel.GetSymbolInfo(node);
 
-                if (symbolInfo.Symbol == null)
-                {
-                    containingNodeTypes.Add(MakeKey(node), null);
-                    continue;
-                }
+                nodeTypes.Add(MakeKey(node), symbolInfo.Symbol?.ToString());
 
-                if (symbolInfo.Symbol.ContainingType == null)
-                {
-                    containingNodeTypes.Add(MakeKey(node), symbolInfo.Symbol.ToString());
-                    continue;
-                }
-
-                containingNodeTypes.Add(MakeKey(node), symbolInfo.Symbol.ContainingType.ToString());
-            }
-
-            foreach (var node in tree.GetCompilationUnitRoot().DescendantNodesAndSelf())
-            {
-                var typeInfo = semanticModel.GetTypeInfo(node);
-
-                if (typeInfo.Type == null)
-                {
-                    nodeTypes.Add(MakeKey(node), null);
-                    continue;
-                }
-
-                nodeTypes.Add(MakeKey(node), typeInfo.ConvertedType.ToString());
+                containingNodeTypes.Add(MakeKey(node),
+                    symbolInfo.Symbol?.ContainingType?.ToString() ??
+                    symbolInfo.Symbol?.ToString());
             }
         }
 
