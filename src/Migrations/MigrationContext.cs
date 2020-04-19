@@ -9,6 +9,8 @@ namespace LibAdapter.Migrations
     public class MigrationContext
     {
         private readonly Dictionary<string, string> containingNodeTypes = new Dictionary<string, string>();
+        
+        private readonly Dictionary<string, string> nodeTypes = new Dictionary<string, string>();
 
         private readonly Dictionary<string, MethodInfo> methodMap =
             new Dictionary<string, MethodInfo>();
@@ -16,91 +18,41 @@ namespace LibAdapter.Migrations
         private readonly Dictionary<string, IdentifierInfo> identifierMap =
             new Dictionary<string, IdentifierInfo>();
 
-        public CSharpCompilation Compilation;
-
         public void Populate(CSharpCompilation compilation, SyntaxTree tree)
         {
-            Compilation = compilation;
-
             var root = tree.GetCompilationUnitRoot();
             var semanticModel = compilation.GetSemanticModel(tree);
 
             foreach (var node in tree.GetCompilationUnitRoot().DescendantNodesAndSelf())
             {
-                var typeInfo = semanticModel.GetSymbolInfo(node);
+                var symbolInfo = semanticModel.GetSymbolInfo(node);
 
-                if (typeInfo.Symbol == null)
+                if (symbolInfo.Symbol == null)
                 {
                     containingNodeTypes.Add(MakeKey(node), null);
                     continue;
                 }
 
-                if (typeInfo.Symbol.ContainingType == null)
+                if (symbolInfo.Symbol.ContainingType == null)
                 {
-                    containingNodeTypes.Add(MakeKey(node), typeInfo.Symbol.ToString());
+                    containingNodeTypes.Add(MakeKey(node), symbolInfo.Symbol.ToString());
                     continue;
                 }
 
-                containingNodeTypes.Add(MakeKey(node), typeInfo.Symbol.ContainingType.ToString());
+                containingNodeTypes.Add(MakeKey(node), symbolInfo.Symbol.ContainingType.ToString());
             }
 
-            var types = root.DescendantNodesAndSelf().OfType<ObjectCreationExpressionSyntax>().ToList();
-            foreach (var type in types)
+            foreach (var node in tree.GetCompilationUnitRoot().DescendantNodesAndSelf())
             {
-                var containingType = semanticModel.GetTypeInfo(type).Type;
-                var constructorInfo = new MethodInfo
-                {
-                    TypeName = containingType.ToString(),
-                    MethodName = "ctor"
-                };
+                var typeInfo = semanticModel.GetTypeInfo(node);
 
-                var args = new List<string>();
-                foreach (var argument in type.ArgumentList?.Arguments ?? Enumerable.Empty<ArgumentSyntax>())
+                if (typeInfo.Type == null)
                 {
-                    var symbolInfo = semanticModel.GetTypeInfo(argument.Expression).ConvertedType;
-                    args.Add(symbolInfo.ToString());
+                    nodeTypes.Add(MakeKey(node), null);
+                    continue;
                 }
 
-                constructorInfo.Arguments = args.ToArray();
-                methodMap.Add(MakeKey(type), constructorInfo);
-            }
-
-            var invocations = root.DescendantNodesAndSelf().OfType<InvocationExpressionSyntax>().ToList();
-            foreach (var invocation in invocations)
-            {
-                var symInfo = semanticModel.GetSymbolInfo(invocation);
-                var containingSymbol = symInfo.CandidateSymbols.Any() ? 
-                    symInfo.CandidateSymbols.First().ContainingSymbol
-                    : semanticModel.GetSymbolInfo(invocation).Symbol.ContainingSymbol;
-
-                var methodInfo = new MethodInfo
-                {
-                    TypeName = containingSymbol.ToString(),
-                    MethodName = GetMethodIdentifier(invocation)?.Identifier.ValueText
-                };
-
-                var args = new List<string>();
-                foreach (var argument in invocation.ArgumentList.Arguments)
-                {
-                    var symbolInfo = semanticModel.GetTypeInfo(argument.Expression).ConvertedType;
-                    args.Add(symbolInfo.ToString());
-                }
-
-                methodInfo.Arguments = args.ToArray();
-                methodMap.Add(MakeKey(invocation), methodInfo);
-            }
-
-            var identifiers = root.DescendantNodesAndSelf().OfType<IdentifierNameSyntax>().ToList();
-
-            foreach (var identifier in identifiers)
-            {
-                var containingSymbol = semanticModel.GetSymbolInfo(identifier).Symbol;
-                if(containingSymbol != null){
-                    identifierMap.Add(MakeKey(identifier), new IdentifierInfo
-                    {
-                        TypeName = containingSymbol.ToString()
-                    });
-                }
+                nodeTypes.Add(MakeKey(node), typeInfo.ConvertedType.ToString());
             }
         }
 
@@ -128,6 +80,17 @@ namespace LibAdapter.Migrations
             return containingNodeTypes[MakeKey(node)];
         }
 
+        public string GetNodeType(SyntaxNode node)
+        {
+            return nodeTypes[MakeKey(node)];
+        }
+
+        public void UpdateNodeContainingClassType(SyntaxNode node, string newContainingType)
+        {
+            containingNodeTypes.Remove(MakeKey(node));
+            containingNodeTypes.Add(MakeKey(node), newContainingType);
+        }
+
         public MethodInfo GetMethodInfo(ExpressionSyntax method)
         {
             return methodMap[MakeKey(method)];
@@ -141,12 +104,6 @@ namespace LibAdapter.Migrations
 
         public void AddNewIdentifier(IdentifierNameSyntax identifier, IdentifierInfo info)
         {
-            identifierMap.Add(MakeKey(identifier), info);
-        }
-
-        public void UpdateIdentifierInfo(IdentifierNameSyntax identifier, IdentifierInfo info)
-        {
-            identifierMap.Remove(MakeKey(identifier));
             identifierMap.Add(MakeKey(identifier), info);
         }
     }

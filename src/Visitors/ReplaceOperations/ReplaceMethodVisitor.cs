@@ -3,21 +3,24 @@ using System.Linq;
 using LibAdapter.Migrations;
 using LibAdapter.Visitors.RenameOperations;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace LibAdapter.Visitors.ReplaceOperations
 {
-    public class ReplaceMethodVisitor : ClassVisitor
+    public class ReplaceMethodVisitor : CSharpSyntaxRewriter
     {
+        private readonly MigrationContext _context;
         private readonly Method _oldMethod;
         private readonly Method _newMethod;
 
         public ReplaceMethodVisitor(
             MigrationContext context,
             Method oldMethod,
-            Method newMethod) : base(context)
+            Method newMethod)
         {
+            _context = context;
             _oldMethod = oldMethod;
             _newMethod = newMethod;
         }
@@ -43,7 +46,7 @@ namespace LibAdapter.Visitors.ReplaceOperations
             if (MethodMatches(node))
             {
                 node = (InvocationExpressionSyntax)new RenameMethodVisitor(
-                        Context,
+                        _context,
                         _oldMethod,
                         _newMethod.Name)
                     .VisitInvocationExpression(node);
@@ -60,7 +63,7 @@ namespace LibAdapter.Visitors.ReplaceOperations
 
         private bool MethodMatches(ExpressionSyntax node)
         {
-            var info = Context.GetMethodInfo(node);
+            var info = _context.GetMethodInfo(node);
             return info.TypeName == _oldMethod.Type
                    && info.MethodName == _oldMethod.Name
                    && ArgumentsMatch(info.Arguments, _oldMethod.Arguments);
@@ -74,7 +77,7 @@ namespace LibAdapter.Visitors.ReplaceOperations
                     var newIdentifier = IdentifierName(a.Type);
                     newIdentifier = (IdentifierNameSyntax) new AnnotationVisitor().Visit(newIdentifier);
 
-                    Context.AddNewIdentifier(newIdentifier, new IdentifierInfo
+                    _context.AddNewIdentifier(newIdentifier, new IdentifierInfo
                     {
                         TypeName = a.Type
                     });

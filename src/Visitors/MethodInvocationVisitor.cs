@@ -15,8 +15,9 @@ namespace LibAdapter.Visitors
 
         protected bool InvocationMatches(InvocationExpressionSyntax invocation, string fullTypeName, string methodName)
         {
-            var methodInfo = Context.GetMethodInfo(invocation);
-            return methodInfo.TypeName == fullTypeName && methodInfo.MethodName == methodName;
+            var methodIdentifier = Context.GetMethodIdentifier(invocation);
+            var containingType = Context.GetNodeContainingClassType(invocation);
+            return containingType == fullTypeName && methodIdentifier.ToString() == methodName;
         }
     }
 }

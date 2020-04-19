@@ -5,8 +5,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LibAdapter.Visitors.RenameOperations
 {
-    public class RenameMemberVisitor : ClassVisitor
+    public class RenameMemberVisitor : CSharpSyntaxRewriter
     {
+        private readonly MigrationContext _context;
         private readonly string _type;
         private readonly string _memberName;
         private readonly string _newName;
@@ -15,8 +16,9 @@ namespace LibAdapter.Visitors.RenameOperations
             MigrationContext context,
             string type,
             string memberName,
-            string newName) : base(context)
+            string newName)
         {
+            _context = context;
             _type = type;
             _memberName = memberName;
             _newName = newName;
@@ -26,7 +28,7 @@ namespace LibAdapter.Visitors.RenameOperations
         {
             node = (MemberAccessExpressionSyntax) base.VisitMemberAccessExpression(node);
 
-            var type = Context.GetNodeContainingClassType(node);
+            var type = _context.GetNodeContainingClassType(node);
 
             if (type == _type && node.Name.ToString() == _memberName)
             {
