@@ -35,7 +35,7 @@ namespace LibAdapter.Visitors.RenameOperations
                 var ns = string.Join(".", parts.Take(parts.Length - 1));
                 var newType = ns + "." + NewName;
 
-                _context.UpdateNodeContainingClassType(node, newType);
+                _context.UpdateNodeType(node, newType);
             }
 
             return node;
