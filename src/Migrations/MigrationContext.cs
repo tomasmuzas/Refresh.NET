@@ -8,6 +8,8 @@ namespace LibAdapter.Migrations
 {
     public class MigrationContext
     {
+        private readonly Dictionary<string, string> containingNodeTypes = new Dictionary<string, string>();
+
         private readonly Dictionary<string, MethodInfo> methodMap =
             new Dictionary<string, MethodInfo>();
 
@@ -19,8 +21,28 @@ namespace LibAdapter.Migrations
         public void Populate(CSharpCompilation compilation, SyntaxTree tree)
         {
             Compilation = compilation;
+
             var root = tree.GetCompilationUnitRoot();
             var semanticModel = compilation.GetSemanticModel(tree);
+
+            foreach (var node in tree.GetCompilationUnitRoot().DescendantNodesAndSelf())
+            {
+                var typeInfo = semanticModel.GetSymbolInfo(node);
+
+                if (typeInfo.Symbol == null)
+                {
+                    containingNodeTypes.Add(MakeKey(node), null);
+                    continue;
+                }
+
+                if (typeInfo.Symbol.ContainingType == null)
+                {
+                    containingNodeTypes.Add(MakeKey(node), typeInfo.Symbol.ToString());
+                    continue;
+                }
+
+                containingNodeTypes.Add(MakeKey(node), typeInfo.Symbol.ContainingType.ToString());
+            }
 
             var types = root.DescendantNodesAndSelf().OfType<ObjectCreationExpressionSyntax>().ToList();
             foreach (var type in types)
@@ -99,6 +121,11 @@ namespace LibAdapter.Migrations
         {
             methodMap.Remove(MakeKey(invocation));
             methodMap.Add(MakeKey(invocation), info);
+        }
+
+        public string GetNodeContainingClassType(SyntaxNode node)
+        {
+            return containingNodeTypes[MakeKey(node)];
         }
 
         public MethodInfo GetMethodInfo(ExpressionSyntax method)
