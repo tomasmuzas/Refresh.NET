@@ -17,7 +17,10 @@ namespace LibAdapterTests
 
                 public class Program
                 {
-                    var instance = new TestClass();
+                    public void Main()
+                    {
+                        var instance = new TestClass();
+                    }
                 }
             }";
 
@@ -30,7 +33,10 @@ namespace LibAdapterTests
 
                 public class Program
                 {
-                    var instance = new NewClass();
+                    public void Main()
+                    {
+                        NewClass instance = new NewClass();
+                    }
                 }
             }";
 

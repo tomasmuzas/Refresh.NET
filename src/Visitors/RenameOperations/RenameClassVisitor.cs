@@ -24,6 +24,8 @@ namespace LibAdapter.Visitors.RenameOperations
         {
             node = (IdentifierNameSyntax) base.VisitIdentifierName(node);
 
+            var nodeStr = node.Parent.ToString();
+
             if (node != null && _context.GetNodeType(node) == FullTypeName)
             {
                 node = node.WithIdentifier(SyntaxFactory.Identifier(NewName)
