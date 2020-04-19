@@ -15,8 +15,8 @@ namespace LibAdapter.Visitors
 
         protected bool MatchesClassType(IdentifierNameSyntax identifier, string fullTypeName)
         {
-            var identifierInfo = Context.GetIdentifierInfo(identifier);
-            return identifierInfo?.TypeName == fullTypeName;
+            var identifierInfo = Context.GetNodeContainingClassType(identifier);
+            return identifierInfo == fullTypeName;
         }
     }
 }
