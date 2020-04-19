@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LibAdapter.Migrations
 {
@@ -11,9 +10,6 @@ namespace LibAdapter.Migrations
         private readonly Dictionary<string, string> containingNodeTypes = new Dictionary<string, string>();
         
         private readonly Dictionary<string, string> nodeTypes = new Dictionary<string, string>();
-
-        private readonly Dictionary<string, IdentifierInfo> identifierMap =
-            new Dictionary<string, IdentifierInfo>();
 
         public void Populate(CSharpCompilation compilation, SyntaxTree tree)
         {
@@ -29,11 +25,6 @@ namespace LibAdapter.Migrations
                     symbolInfo.Symbol?.ContainingType?.ToString() ??
                     symbolInfo.Symbol?.ToString());
             }
-        }
-
-        private static string MakeKey(SyntaxNode node)
-        {
-            return node.GetAnnotations("TraceAnnotation").First().Data;
         }
 
         public string GetNodeContainingClassType(SyntaxNode node)
@@ -52,9 +43,15 @@ namespace LibAdapter.Migrations
             containingNodeTypes.Add(MakeKey(node), newContainingType);
         }
 
-        public void AddNewIdentifier(IdentifierNameSyntax identifier, IdentifierInfo info)
+        public void UpdateNodeType(SyntaxNode node, string newType)
         {
-            identifierMap.Add(MakeKey(identifier), info);
+            nodeTypes.Remove(MakeKey(node));
+            nodeTypes.Add(MakeKey(node), newType);
+        }
+
+        private static string MakeKey(SyntaxNode node)
+        {
+            return node.GetAnnotations("TraceAnnotation").First().Data;
         }
     }
 }

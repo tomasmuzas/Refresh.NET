@@ -3,7 +3,6 @@ using System.Linq;
 using LibAdapter.Migrations;
 using LibAdapter.Visitors.RenameOperations;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -77,10 +76,7 @@ namespace LibAdapter.Visitors.ReplaceOperations
                     var newIdentifier = IdentifierName(a.Type);
                     newIdentifier = (IdentifierNameSyntax) new AnnotationVisitor().Visit(newIdentifier);
 
-                    _context.AddNewIdentifier(newIdentifier, new IdentifierInfo
-                    {
-                        TypeName = a.Type
-                    });
+                    _context.UpdateNodeType(newIdentifier, a.Type);
 
                     if (!string.IsNullOrEmpty(a.DefaultValueExpression))
                     {
