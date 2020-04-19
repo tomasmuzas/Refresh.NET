@@ -28,20 +28,17 @@ namespace LibAdapter.Visitors.RenameOperations
             if (InvocationMatches(invocation, FullTypeName, OldMethodName))
             {
                 var oldIdentifier = GetMethodIdentifier(invocation);
-                var oldIdentifierInfo = Context.GetIdentifierInfo(oldIdentifier);
 
                 var newIdentifier = IdentifierName(NewMethodName);
                 newIdentifier = oldIdentifier.CopyAnnotationsTo(newIdentifier);
-
-                Context.UpdateNodeContainingClassType(newIdentifier, oldIdentifierInfo.TypeName);
 
                 var newInvocation = invocation.ReplaceNode(
                     oldIdentifier,
                     newIdentifier);
 
                 invocation = invocation.CopyAnnotationsTo(newInvocation);
-                
-                // TODO Update invocation
+
+                Context.UpdateNodeContainingClassType(newIdentifier, FullTypeName);
             }
             return invocation;
         }
