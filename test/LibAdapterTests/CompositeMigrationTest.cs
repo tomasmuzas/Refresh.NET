@@ -1,4 +1,6 @@
-﻿using LibAdapter.Migrations;
+﻿using System.Collections.Generic;
+using LibAdapter.Migrations;
+using LibAdapter.Migrations.MethodSignatureOperations;
 using LibAdapter.Migrations.RenameOperations;
 using Xunit;
 
@@ -40,7 +42,7 @@ namespace LibAdapterTests
                     public void Main()
                     {
                         NewClass instance = new NewClass();
-                        instance.NewMethod();
+                        instance.NewMethod(new object());
                     }
                 }
             }";
@@ -53,8 +55,26 @@ namespace LibAdapterTests
                             {
                                 Type = "Test.TestClass",
                                 Name = "TestMethod"
+                            }, 
+                            "NewMethod"),
+                        new AddArgumentsMigration(
+                            new Method
+                            {
+                                Type = "Test.TestClass",
+                                Name = "NewMethod"
+                            }, 
+                            new List<(Argument argument, int position)>
+                            {
+                                (new Argument{DefaultValueExpression = "new object()"}, 1),
+                                (new Argument{DefaultValueExpression = "new string()"}, 2)
+                            }),
+                        new RemoveArgumentsMigration(
+                            new Method
+                            {
+                                Type = "Test.TestClass",
+                                Name = "NewMethod"
                             },
-                            "NewMethod")),
+                            new List<int>{2})),
                     source);
 
             Assert.Equal(expected, refactoredAst.ToString());
