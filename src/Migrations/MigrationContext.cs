@@ -14,8 +14,11 @@ namespace LibAdapter.Migrations
         private readonly Dictionary<string, IdentifierInfo> identifierMap =
             new Dictionary<string, IdentifierInfo>();
 
+        public CSharpCompilation Compilation;
+
         public void Populate(CSharpCompilation compilation, SyntaxTree tree)
         {
+            Compilation = compilation;
             var root = tree.GetCompilationUnitRoot();
             var semanticModel = compilation.GetSemanticModel(tree);
 
