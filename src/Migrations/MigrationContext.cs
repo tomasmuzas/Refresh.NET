@@ -20,7 +20,6 @@ namespace LibAdapter.Migrations
 
         public void Populate(CSharpCompilation compilation, SyntaxTree tree)
         {
-            var root = tree.GetCompilationUnitRoot();
             var semanticModel = compilation.GetSemanticModel(tree);
 
             foreach (var node in tree.GetCompilationUnitRoot().DescendantNodesAndSelf())
@@ -56,23 +55,9 @@ namespace LibAdapter.Migrations
             }
         }
 
-        public IdentifierNameSyntax GetMethodIdentifier(InvocationExpressionSyntax invocation)
-        {
-            var nodes = invocation.Expression
-                .DescendantNodes()
-                .OfType<IdentifierNameSyntax>().ToList();
-            return nodes.LastOrDefault() ?? null;
-        }
-
         private static string MakeKey(SyntaxNode node)
         {
             return node.GetAnnotations("TraceAnnotation").First().Data;
-        }
-
-        public void UpdateInvocationInfo(InvocationExpressionSyntax invocation, MethodInfo info)
-        {
-            methodMap.Remove(MakeKey(invocation));
-            methodMap.Add(MakeKey(invocation), info);
         }
 
         public string GetNodeContainingClassType(SyntaxNode node)
