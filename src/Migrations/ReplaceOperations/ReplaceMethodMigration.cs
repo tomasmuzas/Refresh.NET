@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using LibAdapter.Visitors.ReplaceOperations;
+﻿using LibAdapter.Visitors.ReplaceOperations;
 using Microsoft.CodeAnalysis;
 
 namespace LibAdapter.Migrations.ReplaceOperations
@@ -19,11 +18,8 @@ namespace LibAdapter.Migrations.ReplaceOperations
         {
             var visitor = new ReplaceMethodVisitor(
                 context,
-                _oldMethod.Type,
-                _oldMethod.Name,
-                _newMethod.Name,
-                _oldMethod.Arguments.Select(a => a.Type).ToArray(),
-                _newMethod.Arguments.Select(a => a.Type).ToArray());
+                _oldMethod,
+                _newMethod);
             var ast = visitor.Visit(initialAST.GetRoot());
 
             return ast.SyntaxTree;

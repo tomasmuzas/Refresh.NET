@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using LibAdapter.Migrations;
-using LibAdapter.Migrations.MethodSignatureOperations;
+﻿using LibAdapter.Migrations;
 using LibAdapter.Migrations.ReplaceOperations;
 using Xunit;
 
@@ -59,7 +57,19 @@ namespace LibAdapterTests
                     {
                         Type = "Test.TestClass",
                         Name = "OtherMethod",
-                        Arguments = new[] { new Argument { Type = "string" }, new Argument { Type = "int" } }
+                        Arguments = new[]
+                        {
+                            new Argument
+                            {
+                                Type = "string",
+                                DefaultValueExpression = "\"test\""
+                            }, 
+                            new Argument
+                            {
+                                Type = "int",
+                                DefaultValueExpression = "1"
+                            }
+                        }
                     }), 
                 source);
 
