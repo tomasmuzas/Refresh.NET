@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using LibAdapter.Migrations;
+﻿using LibAdapter.Migrations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -27,8 +26,7 @@ namespace LibAdapter.Visitors.RenameOperations
         {
             node = (MemberAccessExpressionSyntax) base.VisitMemberAccessExpression(node);
 
-            var info = Context.Compilation.GetSemanticModel(node.SyntaxTree).GetSymbolInfo(node);
-            var type = info.Symbol.ContainingType.ToString();
+            var type = Context.GetNodeContainingClassType(node);
 
             if (type == _type && node.Name.ToString() == _memberName)
             {
