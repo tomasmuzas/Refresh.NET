@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using LibAdapter.Migrations;
 using LibAdapter.Visitors.RenameOperations;
 using Microsoft.CodeAnalysis;
@@ -7,31 +8,20 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace LibAdapter.Visitors.ReplaceOperations
 {
-    public class ReplaceMethodVisitor : ClassVisitor
+    public class ReplaceMethodVisitor : MethodInvocationVisitor
     {
-        private string FullTypeName { get; }
-
-        private string OldMethodName { get; }
-
-        private string NewMethodName { get; }
-
-        private string[] OldArgumentTypes { get; }
-
-        private string[] NewArgumentTypes { get; }
+        private readonly MigrationContext _context;
+        private readonly Method _oldMethod;
+        private readonly Method _newMethod;
 
         public ReplaceMethodVisitor(
             MigrationContext context,
-            string fullTypeName,
-            string oldMethodName,
-            string newMethodName,
-            string[] oldArgumentTypes,
-            string[] newArgumentTypes) : base(context)
+            Method oldMethod,
+            Method newMethod) : base(context)
         {
-            OldArgumentTypes = oldArgumentTypes;
-            NewArgumentTypes = newArgumentTypes;
-            OldMethodName = oldMethodName;
-            NewMethodName = newMethodName;
-            FullTypeName = fullTypeName;
+            _context = context;
+            _oldMethod = oldMethod;
+            _newMethod = newMethod;
         }
 
         public override SyntaxNode VisitObjectCreationExpression(ObjectCreationExpressionSyntax node)
@@ -41,7 +31,7 @@ namespace LibAdapter.Visitors.ReplaceOperations
             {
                 node = node.WithArgumentList(
                     CreateArgumentList(
-                        NewArgumentTypes,
+                        _newMethod.Arguments,
                         node.ArgumentList.CloseParenToken.LeadingTrivia,
                         node.ArgumentList.CloseParenToken.TrailingTrivia));
             }
@@ -55,14 +45,14 @@ namespace LibAdapter.Visitors.ReplaceOperations
             if (MethodMatches(node))
             {
                 node = (InvocationExpressionSyntax)new RenameMethodVisitor(
-                        Context,
-                        new Method { Type = FullTypeName, Name = OldMethodName},
-                        NewMethodName)
+                        _context,
+                        _oldMethod,
+                        _newMethod.Name)
                     .VisitInvocationExpression(node);
 
                 node = node.WithArgumentList(
                     CreateArgumentList(
-                        NewArgumentTypes,
+                        _newMethod.Arguments,
                         node.ArgumentList.CloseParenToken.LeadingTrivia,
                         node.ArgumentList.CloseParenToken.TrailingTrivia));
             }
@@ -72,26 +62,30 @@ namespace LibAdapter.Visitors.ReplaceOperations
 
         private bool MethodMatches(ExpressionSyntax node)
         {
-            var info = Context.GetMethodInfo(node);
-            return info.TypeName == FullTypeName
-                   && info.MethodName == OldMethodName
-                   && ArgumentsMatch(info.Arguments, OldArgumentTypes);
+            var type = _context.GetNodeContainingClassType(node);
+            return type == _oldMethod.Type
+                   && GetMethodIdentifier(node).ToString() == _oldMethod.Name;
+            //&& ArgumentsMatch(info.Arguments, _oldMethod.Arguments);
         }
 
-        private ArgumentListSyntax CreateArgumentList(string[] types, SyntaxTriviaList leadingTrivia, SyntaxTriviaList trailingTrivia)
+        private ArgumentListSyntax CreateArgumentList(IEnumerable<Argument> arguments, SyntaxTriviaList leadingTrivia, SyntaxTriviaList trailingTrivia)
         {
             var argList = ArgumentList(
-                SeparatedList(types.Select(t =>
+                SeparatedList(arguments.Select(a =>
                 {
-                    var newIdentifier = IdentifierName(t);
+                    var newIdentifier = IdentifierName(a.Type);
                     newIdentifier = (IdentifierNameSyntax) new AnnotationVisitor().Visit(newIdentifier);
 
-                    Context.AddNewIdentifier(newIdentifier, new IdentifierInfo
-                    {
-                        TypeName = t
-                    });
+                    _context.UpdateNodeType(newIdentifier, a.Type);
 
-                    return Argument(DefaultExpression(newIdentifier));
+                    if (!string.IsNullOrEmpty(a.DefaultValueExpression))
+                    {
+                        return Argument(ParseExpression(a.DefaultValueExpression));
+                    }
+                    else
+                    {
+                        return Argument(DefaultExpression(newIdentifier));
+                    }
                 })));
 
             argList = argList.WithCloseParenToken(argList.CloseParenToken
@@ -100,11 +94,11 @@ namespace LibAdapter.Visitors.ReplaceOperations
             return argList;
         }
 
-        private bool ArgumentsMatch(string[] argumentTypes, string[] expectedTypes)
+        private bool ArgumentsMatch(string[] argumentTypes, Argument[] expectedArguments)
         {
             for (int i = 0; i < argumentTypes.Length; i++)
             {
-                if (argumentTypes[i] != expectedTypes[i])
+                if (argumentTypes[i] != expectedArguments[i].Type)
                 {
                     return false;
                 }

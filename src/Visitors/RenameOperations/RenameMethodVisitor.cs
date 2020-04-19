@@ -15,7 +15,7 @@ namespace LibAdapter.Visitors.RenameOperations
 
         public RenameMethodVisitor(
             MigrationContext context, 
-            Migrations.Method method,
+            Method method,
             string newMethodName) : base(context)
         {
             FullTypeName = method.Type;
@@ -27,26 +27,18 @@ namespace LibAdapter.Visitors.RenameOperations
         {
             if (InvocationMatches(invocation, FullTypeName, OldMethodName))
             {
-                var oldIdentifier = Context.GetMethodIdentifier(invocation);
-                var oldIdentifierInfo = Context.GetIdentifierInfo(oldIdentifier);
+                var oldIdentifier = GetMethodIdentifier(invocation.Expression);
 
                 var newIdentifier = IdentifierName(NewMethodName);
                 newIdentifier = oldIdentifier.CopyAnnotationsTo(newIdentifier);
-
-                Context.UpdateIdentifierInfo(newIdentifier, new IdentifierInfo {TypeName = oldIdentifierInfo.TypeName});
 
                 var newInvocation = invocation.ReplaceNode(
                     oldIdentifier,
                     newIdentifier);
 
                 invocation = invocation.CopyAnnotationsTo(newInvocation);
-                
-                var invocationInfo = Context.GetMethodInfo(invocation);
-                Context.UpdateInvocationInfo(invocation, new MethodInfo
-                {
-                    TypeName = invocationInfo.TypeName,
-                    MethodName = NewMethodName
-                });
+
+                Context.UpdateNodeContainingClassType(newIdentifier, FullTypeName);
             }
             return invocation;
         }
