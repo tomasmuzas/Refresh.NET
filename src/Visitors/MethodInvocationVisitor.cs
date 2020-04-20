@@ -26,7 +26,7 @@ namespace LibAdapter.Visitors
             var nodes = invocation
                 .DescendantNodes()
                 .OfType<IdentifierNameSyntax>().ToList();
-            return nodes.LastOrDefault() ?? null;
+            return nodes.ElementAtOrDefault(1) ?? null;
         }
 
     }

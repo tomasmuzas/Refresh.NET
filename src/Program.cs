@@ -57,8 +57,11 @@ namespace LibAdapter
                 var context = new MigrationContext();
                 context.Populate(compilation, tree);
 
-                //var ast = new MyMigration().Apply(tree, context);
-                //Console.WriteLine(ast.ToString());
+                var ast = new CustomMigration().Apply(tree, context);
+                Console.WriteLine(ast.ToString());
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine();
             }
 
             watch.Stop();
