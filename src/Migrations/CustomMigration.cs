@@ -1,4 +1,4 @@
-﻿using LibAdapter.Migrations.RenameOperations;
+﻿using LibAdapter.Migrations.Builders;
 using Microsoft.CodeAnalysis;
 
 namespace LibAdapter.Migrations
@@ -7,11 +7,14 @@ namespace LibAdapter.Migrations
     {
         public SyntaxTree Apply(SyntaxTree initialAST, MigrationContext context)
         {
-            return new CompositeMigration(
-                new RenameClassMigration("LibAdapterTestSolution.TestClass", "NewClass"),
-                new RenameMethodMigration(new Method{Type= "LibAdapterTestSolution.NewClass", Name = "TestMethod" }, "NewMethod")
-                )
-                .Apply(initialAST, context);
+            return new MigrationBuilder()
+                .RenameClass("LibAdapterTestSolution.TestClass", "NewClass")
+                .RenameMethod(m => m
+                    .OfClass("LibAdapterTestSolution.NewClass")
+                    .WithName("TestMethod"), 
+                    "NewMethod")
+                .Build()
+                .Apply(initialAST, context);;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace LibAdapter.Migrations
+﻿using System.Collections.Generic;
+
+namespace LibAdapter.Migrations
 {
     public class Method
     {
@@ -6,6 +8,6 @@
 
         public string Name { get; set; }
 
-        public Argument[] Arguments { get; set; }
+        public IList<Argument> Arguments { get; set; }
     }
 }
