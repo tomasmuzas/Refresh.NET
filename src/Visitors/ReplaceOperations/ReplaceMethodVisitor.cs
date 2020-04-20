@@ -64,7 +64,7 @@ namespace LibAdapter.Visitors.ReplaceOperations
         {
             var type = _context.GetNodeContainingClassType(node);
             return type == _oldMethod.Type
-                   && GetMethodIdentifier(node)?.ToString() == _oldMethod.Name;
+                   && GetMethodIdentifier(node).ToString() == _oldMethod.Name;
             //&& ArgumentsMatch(info.Arguments, _oldMethod.Arguments);
         }
 
