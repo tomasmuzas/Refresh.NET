@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Loader;
 using LibAdapter.Migrations;
 using Microsoft.CodeAnalysis;
@@ -18,16 +20,18 @@ namespace LibAdapter
             var sourceText = SourceText.From(migrationCode);
             var migrationTree = SyntaxFactory.ParseSyntaxTree(sourceText);
 
-            var refs = new MetadataReference[]
+            var refs = new List<MetadataReference>
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(IMigration).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(SyntaxTree).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(System.Runtime.AssemblyTargetedPatchBandAttribute).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(IMigration).Assembly.Location)
             };
 
+            var referencedAssemblies =typeof(IMigration).Assembly.GetReferencedAssemblies();
+            refs.AddRange(referencedAssemblies
+                .Select(assembly => 
+                    MetadataReference.CreateFromFile(Assembly.Load(assembly).Location)));
+
+            var assemblyPath = "migration.dll";
             var result = CSharpCompilation
                 .Create(
                     "assembly",
@@ -36,11 +40,11 @@ namespace LibAdapter
                     options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
                         optimizationLevel: OptimizationLevel.Release,
                         assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default))
-                .Emit("assembly.dll");
+                .Emit(assemblyPath);
 
-            var a = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath("assembly.dll")); ;
+            var migrationAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath(assemblyPath)); ;
 
-            var migrationType = a.GetTypes()
+            var migrationType = migrationAssembly.GetTypes()
                 .First(t => t.GetInterfaces().Contains(typeof(IMigration)));
 
             return (IMigration)Activator.CreateInstance(migrationType);
