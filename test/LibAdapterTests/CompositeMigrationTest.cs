@@ -47,6 +47,11 @@ namespace LibAdapterTests
                 }
             }";
 
+            var newMethod = new Method
+            {
+                Type = "Test.NewClass",
+                Name = "NewMethod"
+            };
             var refactoredAst = PerformMigration(
                 new CompositeMigration(
                         new RenameClassMigration("Test.TestClass", "NewClass"),
@@ -58,23 +63,13 @@ namespace LibAdapterTests
                             }, 
                             "NewMethod"),
                         new AddArgumentsMigration(
-                            new Method
-                            {
-                                Type = "Test.NewClass",
-                                Name = "NewMethod"
-                            }, 
+                            newMethod, 
                             new List<(Argument argument, int position)>
                             {
                                 (new Argument{DefaultValueExpression = "new object()"}, 1),
                                 (new Argument{DefaultValueExpression = "new string()"}, 2)
                             }),
-                        new RemoveArgumentsMigration(
-                            new Method
-                            {
-                                Type = "Test.NewClass",
-                                Name = "NewMethod"
-                            },
-                            new List<int>{2})),
+                        new RemoveArgumentsMigration(newMethod, new []{2})),
                     source);
 
             Assert.Equal(expected, refactoredAst.ToString());
