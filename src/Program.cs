@@ -15,6 +15,7 @@ namespace LibAdapter
         {
             var projectPath = args[1];
             var mainDllPath = args[2];
+            var migrationPath = args[3];
 
             var references = Assembly.LoadFile(mainDllPath).GetReferencedAssemblies();
 
@@ -52,12 +53,14 @@ namespace LibAdapter
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
+            var migration = MigrationLoader.FromPath(migrationPath);
+
             foreach (var tree in trees)
             {
                 var context = new MigrationContext();
                 context.Populate(compilation, tree);
 
-                var ast = new CustomMigration().Apply(tree, context);
+                var ast = migration.Apply(tree, context);
                 Console.WriteLine(ast.ToString());
                 Console.WriteLine();
                 Console.WriteLine();
