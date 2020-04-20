@@ -16,6 +16,17 @@
             return this;
         }
 
+        public PositionalArgument WithPosition(int position)
+        {
+            return new PositionalArgument
+            {
+                Position = position,
+                Type = _argument.Type,
+                Name = _argument.Name,
+                DefaultValueExpression = _argument.DefaultValueExpression
+            };
+        }
+
         public Argument Build()
         {
             return _argument;

@@ -8,9 +8,9 @@ namespace LibAdapter.Migrations.MethodSignatureOperations
     public class AddArgumentsMigration : IMigration
     {
         private readonly Method _method;
-        private readonly List<(Argument argument, int position)> _arguments;
+        private readonly List<PositionalArgument> _arguments;
 
-        public AddArgumentsMigration(Method method, List<(Argument argument, int position)> arguments)
+        public AddArgumentsMigration(Method method, List<PositionalArgument> arguments)
         {
             _method = method;
             _arguments = arguments;
@@ -22,7 +22,7 @@ namespace LibAdapter.Migrations.MethodSignatureOperations
                 context,
                 _method.Type,
                 _method.Name,
-                _arguments.Select(a => (a.argument.DefaultValueExpression, a.position)));
+                _arguments);
             var ast = visitor.Visit(initialAST.GetRoot());
             return ast.SyntaxTree;
         }

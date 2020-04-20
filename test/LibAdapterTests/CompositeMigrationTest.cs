@@ -64,10 +64,18 @@ namespace LibAdapterTests
                             "NewMethod"),
                         new AddArgumentsMigration(
                             newMethod, 
-                            new List<(Argument argument, int position)>
+                            new List<PositionalArgument>
                             {
-                                (new Argument{DefaultValueExpression = "new object()"}, 1),
-                                (new Argument{DefaultValueExpression = "new string()"}, 2)
+                                new PositionalArgument
+                                {
+                                    DefaultValueExpression = "new object()",
+                                    Position = 1
+                                },
+                                new PositionalArgument
+                                {
+                                    DefaultValueExpression = "new string()",
+                                    Position = 2
+                                }
                             }),
                         new RemoveArgumentsMigration(newMethod, new []{2})),
                     source);

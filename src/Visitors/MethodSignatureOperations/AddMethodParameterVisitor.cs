@@ -10,13 +10,13 @@ namespace LibAdapter.Visitors.MethodSignatureOperations
     {
         private string FullTypeName { get; }
         private string MethodName { get; }
-        private IEnumerable<(string typeName, int position)> Arguments { get; }
+        private IEnumerable<PositionalArgument> Arguments { get; }
 
         public AddMethodParameterVisitor(
             MigrationContext context,
             string fullTypeName,
             string MethodName,
-            IEnumerable<(string, int)> arguments) : base(context)
+            IEnumerable<PositionalArgument> arguments) : base(context)
         {
             FullTypeName = fullTypeName;
             this.MethodName = MethodName;
@@ -35,8 +35,11 @@ namespace LibAdapter.Visitors.MethodSignatureOperations
 
                 foreach (var arg in Arguments)
                 {
-                    var argumentNode = Argument(ParseExpression(arg.typeName)); // TODO: Add identifier type, if possible
-                    argList.Insert(arg.position - 1, argumentNode);
+                    var argument = Argument(!string.IsNullOrEmpty(arg.DefaultValueExpression) ?
+                        ParseExpression(arg.DefaultValueExpression):
+                        DefaultExpression(IdentifierName(arg.Type)));
+
+                    argList.Insert(arg.Position - 1, argument);
                 }
 
                 var argListSyntax = ArgumentList(SeparatedList(argList));

@@ -53,14 +53,13 @@ namespace LibAdapterTests
                         Type = "Test.TestClass",
                         Name = "TestMethod"
                     },
-                    new List<(Argument argument, int position)>
+                    new List<PositionalArgument>
                     {
-                        (
-                        new Argument
+                        new PositionalArgument
                         {
-                            DefaultValueExpression = "new object()"
-                        },
-                        1)
+                            DefaultValueExpression = "new object()",
+                            Position = 1
+                        }
                     }), 
                 source);
 
