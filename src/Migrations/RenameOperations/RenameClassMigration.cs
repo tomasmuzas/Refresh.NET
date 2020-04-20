@@ -1,4 +1,5 @@
-﻿using LibAdapter.Visitors.RenameOperations;
+﻿using System.Linq;
+using LibAdapter.Visitors.RenameOperations;
 using Microsoft.CodeAnalysis;
 
 namespace LibAdapter.Migrations.RenameOperations
@@ -18,6 +19,12 @@ namespace LibAdapter.Migrations.RenameOperations
         {
             var visitor = new RenameClassVisitor(context, _type, _newName);
             var newAst = visitor.Visit(initialAST.GetRoot());
+
+            var parts = _type.Split(".");
+            var ns = string.Join(".", parts.Take(parts.Length - 1));
+            var newType = ns + "." + _newName;
+
+            context.ReplaceType(_type, newType);
 
             return newAst.SyntaxTree;
         }

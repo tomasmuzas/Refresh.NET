@@ -49,6 +49,39 @@ namespace LibAdapter.Migrations
             nodeTypes.Add(MakeKey(node), newType);
         }
 
+        public void ReplaceType(string type, string newType)
+        {
+            var nodesToReplace = nodeTypes
+                .Where(kv => kv.Value == type)
+                .Select(kv => kv.Key)
+                .ToList();
+
+            foreach (var node in nodesToReplace)
+            {
+                nodeTypes.Remove(node);
+            }
+
+            foreach (var node in nodesToReplace)
+            {
+                nodeTypes.Add(node, newType);
+            }
+
+            var containingNodesToReplace = containingNodeTypes
+                .Where(kv => kv.Value == type)
+                .Select(kv => kv.Key)
+                .ToList();
+
+            foreach (var node in containingNodesToReplace)
+            {
+                containingNodeTypes.Remove(node);
+            }
+
+            foreach (var node in containingNodesToReplace)
+            {
+                containingNodeTypes.Add(node, newType);
+            }
+        }
+
         private static string MakeKey(SyntaxNode node)
         {
             return node.GetAnnotations("TraceAnnotation").First().Data;

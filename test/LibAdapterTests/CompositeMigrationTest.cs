@@ -53,14 +53,14 @@ namespace LibAdapterTests
                         new RenameMethodMigration(
                             new Method
                             {
-                                Type = "Test.TestClass",
+                                Type = "Test.NewClass",
                                 Name = "TestMethod"
                             }, 
                             "NewMethod"),
                         new AddArgumentsMigration(
                             new Method
                             {
-                                Type = "Test.TestClass",
+                                Type = "Test.NewClass",
                                 Name = "NewMethod"
                             }, 
                             new List<(Argument argument, int position)>
@@ -71,7 +71,7 @@ namespace LibAdapterTests
                         new RemoveArgumentsMigration(
                             new Method
                             {
-                                Type = "Test.TestClass",
+                                Type = "Test.NewClass",
                                 Name = "NewMethod"
                             },
                             new List<int>{2})),

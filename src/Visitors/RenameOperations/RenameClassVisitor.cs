@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using LibAdapter.Migrations;
+﻿using LibAdapter.Migrations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -30,12 +29,6 @@ namespace LibAdapter.Visitors.RenameOperations
                     .WithLeadingTrivia(node.Identifier.LeadingTrivia));
 
                 node = node.CopyAnnotationsTo(node);
-
-                var parts = FullTypeName.Split(".");
-                var ns = string.Join(".", parts.Take(parts.Length - 1));
-                var newType = ns + "." + NewName;
-
-                _context.UpdateNodeType(node, newType);
             }
 
             return node;
