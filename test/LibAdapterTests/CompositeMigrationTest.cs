@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using LibAdapter.Migrations;
-using LibAdapter.Migrations.MethodSignatureOperations;
-using LibAdapter.Migrations.RenameOperations;
+using LibAdapter.Components.Migrations;
+using LibAdapter.Components.Migrations.MethodSignatureOperations;
+using LibAdapter.Components.Migrations.RenameOperations;
 using Xunit;
 
 namespace LibAdapterTests

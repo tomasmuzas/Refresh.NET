@@ -1,5 +1,5 @@
-﻿using LibAdapter.Migrations;
-using LibAdapter.Visitors;
+﻿using LibAdapter.Components.Migrations;
+using LibAdapter.Components.Visitors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 

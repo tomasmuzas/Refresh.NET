@@ -1,5 +1,5 @@
-﻿using LibAdapter.Migrations;
-using LibAdapter.Migrations.RenameOperations;
+﻿using LibAdapter.Components.Migrations;
+using LibAdapter.Components.Migrations.RenameOperations;
 using Xunit;
 
 namespace LibAdapterTests
