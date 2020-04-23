@@ -6,13 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LibAdapter.Components" Version="1.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.10.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.10.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="2.10.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\LibAdapter.Components\LibAdapter.Components.csproj" />
   </ItemGroup>
 
 </Project>
