@@ -8,24 +8,26 @@ namespace LibAdapter.Migrations
     {
         public SyntaxTree Apply(SyntaxTree initialAST, MigrationContext context)
         {
+            var ns = "LibAdapterTestSolution";
+            var newClass = $"{ns}.NewClass";
             return new MigrationBuilder()
-                .RenameClass("LibAdapterTestSolution.TestClass", "NewClass")
+                .RenameClass($"{ns}.TestClass", "NewClass")
                 .RenameMethod(m => m
-                    .OfClass("LibAdapterTestSolution.NewClass")
+                    .OfClass(newClass)
                     .WithName("TestMethod"), 
                     "NewMethod")
                 .AddArguments(m => m
-                    .OfClass("LibAdapterTestSolution.NewClass")
+                    .OfClass(newClass)
                     .WithName("NewMethod"),
-                    new List<PositionalArgument>
-                    {
-                        new ArgumentBuilder()
-                            .WithType("string")
-                            .WithDefaultValueExpression("\"value\"")
-                            .WithPosition(1)
-                    })
+                    a => a
+                        .OfType("string")
+                        .WithDefaultValueExpression("\"value\"")
+                        .AtPosition(1),
+                    a => a
+                        .OfType("string")
+                        .AtPosition(2))
                 .Build()
-                .Apply(initialAST, context);;
+                .Apply(initialAST, context);
         }
     }
 }

@@ -4,7 +4,7 @@
     {
         private readonly Argument _argument = new Argument();
 
-        public ArgumentBuilder WithType(string type)
+        public ArgumentBuilder OfType(string type)
         {
             _argument.Type = type;
             return this;
@@ -14,17 +14,6 @@
         {
             _argument.DefaultValueExpression = expression;
             return this;
-        }
-
-        public PositionalArgument WithPosition(int position)
-        {
-            return new PositionalArgument
-            {
-                Position = position,
-                Type = _argument.Type,
-                Name = _argument.Name,
-                DefaultValueExpression = _argument.DefaultValueExpression
-            };
         }
 
         public Argument Build()

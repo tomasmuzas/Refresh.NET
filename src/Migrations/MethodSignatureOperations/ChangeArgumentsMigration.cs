@@ -7,9 +7,9 @@ namespace LibAdapter.Migrations.MethodSignatureOperations
     public class ChangeArgumentsMigration : IMigration
     {
         private readonly Method _method;
-        private readonly List<(Argument, int)> _arguments;
+        private readonly List<PositionalArgument> _arguments;
 
-        public ChangeArgumentsMigration(Method method, List<(Argument, int)> arguments)
+        public ChangeArgumentsMigration(Method method, List<PositionalArgument> arguments)
         {
             _method = method;
             _arguments = arguments;

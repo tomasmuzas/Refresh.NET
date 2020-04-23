@@ -76,6 +76,90 @@ namespace LibAdapter.Migrations.Builders
             return this;
         }
 
+        public MigrationBuilder AddArguments(Action<MethodBuilder> methodSetup, params Action<PositionalArgumentBuilder>[] argumentSetups)
+        {
+            var methodBuilder = new MethodBuilder();
+            methodSetup.Invoke(methodBuilder);
+            var method = methodBuilder.Build();
+
+            var arguments = new List<PositionalArgument>();
+            foreach (var action in argumentSetups)
+            {
+                var builder = new PositionalArgumentBuilder();
+                action.Invoke(builder);
+                var argument = builder.Build();
+                arguments.Add(argument);
+            }
+
+            _migration.AddMigration(new AddArgumentsMigration(method, arguments));
+            return this;
+        }
+
+        public MigrationBuilder ChangeArguments(Method method, List<PositionalArgument> arguments)
+        {
+            _migration.AddMigration(new ChangeArgumentsMigration(method, arguments));
+            return this;
+        }
+
+        public MigrationBuilder ChangeArguments(Action<MethodBuilder> methodSetup, List<PositionalArgument> arguments)
+        {
+            var methodBuilder = new MethodBuilder();
+            methodSetup.Invoke(methodBuilder);
+            var method = methodBuilder.Build();
+            _migration.AddMigration(new ChangeArgumentsMigration(method, arguments));
+            return this;
+        }
+
+        public MigrationBuilder ChangeArguments(Action<MethodBuilder> methodSetup, params Action<PositionalArgumentBuilder>[] argumentSetups)
+        {
+            var methodBuilder = new MethodBuilder();
+            methodSetup.Invoke(methodBuilder);
+            var method = methodBuilder.Build();
+
+            var arguments = new List<PositionalArgument>();
+            foreach (var action in argumentSetups)
+            {
+                var builder = new PositionalArgumentBuilder();
+                action.Invoke(builder);
+                var argument = builder.Build();
+                arguments.Add(argument);
+            }
+
+            _migration.AddMigration(new ChangeArgumentsMigration(method, arguments));
+            return this;
+        }
+
+        public MigrationBuilder RemoveArguments(Method method, List<int> positions)
+        {
+            _migration.AddMigration(new RemoveArgumentsMigration(method, positions));
+            return this;
+        }
+
+        public MigrationBuilder RemoveArguments(Action<MethodBuilder> methodSetup, List<int> positions)
+        {
+            var methodBuilder = new MethodBuilder();
+            methodSetup.Invoke(methodBuilder);
+            var method = methodBuilder.Build();
+            _migration.AddMigration(new RemoveArgumentsMigration(method, positions));
+            return this;
+        }
+
+        public MigrationBuilder ReorderArguments(Method method, List<int> positions)
+        {
+            _migration.AddMigration(new ReorderArgumentsMigration(method, positions));
+            return this;
+        }
+
+        public MigrationBuilder ReorderArguments(Action<MethodBuilder> methodSetup, List<int> positions)
+        {
+            var methodBuilder = new MethodBuilder();
+            methodSetup.Invoke(methodBuilder);
+            var method = methodBuilder.Build();
+            _migration.AddMigration(new ReorderArgumentsMigration(method, positions));
+            return this;
+        }
+
+
         public IMigration Build()
         {
             return _migration;

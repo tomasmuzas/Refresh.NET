@@ -9,12 +9,12 @@ namespace LibAdapter.Visitors.MethodSignatureOperations
     public class ChangeArgumentsVisitor : MethodInvocationVisitor
     {
         private readonly Method _method;
-        private readonly IEnumerable<(Argument argument, int position)> _arguments;
+        private readonly IEnumerable<PositionalArgument> _arguments;
 
         public ChangeArgumentsVisitor(
             MigrationContext context,
             Method method,
-            IEnumerable<(Argument argument, int position)> arguments) : base(context)
+            IEnumerable<PositionalArgument> arguments) : base(context)
         {
             _method = method;
             _arguments = arguments;
@@ -32,7 +32,7 @@ namespace LibAdapter.Visitors.MethodSignatureOperations
 
                 foreach (var arg in _arguments)
                 {
-                    argList[arg.position - 1] = Argument(ParseExpression(arg.argument.DefaultValueExpression)); 
+                    argList[arg.Position - 1] = Argument(ParseExpression(arg.DefaultValueExpression)); 
                     // TODO: Add identifier type, if possible
                 }
 
