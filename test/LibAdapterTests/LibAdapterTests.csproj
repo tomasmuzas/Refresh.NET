@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\LibAdapter.csproj" />
+    <ProjectReference Include="..\..\src\LibAdapter\LibAdapter.csproj" />
   </ItemGroup>
 
 </Project>

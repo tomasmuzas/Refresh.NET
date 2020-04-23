@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibAdapter", "src\LibAdapter.csproj", "{05BFCADA-F42D-448D-B0EB-B3C3E8197945}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibAdapter", "src\LibAdapter\LibAdapter.csproj", "{05BFCADA-F42D-448D-B0EB-B3C3E8197945}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibAdapterTests", "test\LibAdapterTests\LibAdapterTests.csproj", "{C122DDC4-CBBD-48E2-9DD2-52CBD0CFDF01}"
 EndProject
