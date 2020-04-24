@@ -31,6 +31,12 @@ namespace LibAdapter.Tool
                     var project = manager.GetProject(o.ProjectPath);
                     var result = project.Build().Results.ElementAt(0);
 
+                    if (!result.Succeeded)
+                    {
+                        Console.WriteLine("Failed to build a project.");
+                        return;
+                    }
+
                     var references = result.References;
                     var sourceFiles = result.SourceFiles;
 
