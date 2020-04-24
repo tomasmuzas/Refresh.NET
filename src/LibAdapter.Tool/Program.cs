@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+using System.Linq;
+using Buildalyzer;
 using CommandLine;
 using LibAdapter.Components.Migrations;
 using LibAdapter.Components.Visitors;
@@ -17,9 +18,6 @@ namespace LibAdapter.Tool
             [Option('p', "Project", Required=true, HelpText = "Project to be refactored")]
             public string ProjectPath { get; set; }
 
-            [Option('d', "MainDllPath", Required = true, HelpText = "Path to main DLL")]
-            public string MainDllPath { get; set; }
-
             [Option('m', "Migration", Required = true, HelpText = "Path to migration file")]
             public string MigrationPath { get; set; }
         }
@@ -29,30 +27,18 @@ namespace LibAdapter.Tool
             Parser.Default.ParseArguments<CliOptions>(args)
                 .WithParsed(o =>
                 {
-                    var references = Assembly.LoadFile(o.MainDllPath).GetReferencedAssemblies();
+                    var manager = new AnalyzerManager();
+                    var project = manager.GetProject(o.ProjectPath);
+                    var result = project.Build().Results.ElementAt(0);
+
+                    var references = result.References;
+                    var sourceFiles = result.SourceFiles;
 
                     var compilation = CSharpCompilation.Create("Code")
-                        .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-                        .AddReferences(MetadataReference.CreateFromFile(o.MainDllPath));
-
-                    foreach (var name in references)
-                    {
-                        Assembly assembly;
-
-                        try
-                        {
-                            assembly = Assembly.Load(name);
-                        }
-                        catch
-                        {
-                            assembly = Assembly.LoadFile(args[3]);
-                        }
-
-                        compilation = compilation.AddReferences(MetadataReference.CreateFromFile(assembly.Location));
-                    }
+                        .AddReferences(references.Select(s => MetadataReference.CreateFromFile(s)));
 
                     var trees = new List<SyntaxTree>();
-                    foreach (var filePath in Directory.GetFiles(o.ProjectPath, "*.cs", SearchOption.AllDirectories))
+                    foreach (var filePath in sourceFiles)
                     {
                         var code = File.ReadAllText(filePath);
                         var tree = CSharpSyntaxTree.ParseText(code);
