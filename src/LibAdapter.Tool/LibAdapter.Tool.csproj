@@ -3,9 +3,14 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+	  <PackAsTool>true</PackAsTool>
+	  <ToolCommandName>shiny</ToolCommandName>
+	  <PackageOutputPath>./nupkg</PackageOutputPath>
+	  <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.7.0" />
     <PackageReference Include="LibAdapter.Components" Version="1.0.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.10.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.10.0" />

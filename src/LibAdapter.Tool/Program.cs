@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using CommandLine;
 using LibAdapter.Components.Migrations;
 using LibAdapter.Components.Visitors;
 using Microsoft.CodeAnalysis;
@@ -11,64 +12,76 @@ namespace LibAdapter.Tool
 {
     class Program
     {
+        private class CliOptions
+        {
+            [Option('p', "Project", Required=true, HelpText = "Project to be refactored")]
+            public string ProjectPath { get; set; }
+
+            [Option('d', "MainDllPath", Required = true, HelpText = "Path to main DLL")]
+            public string MainDllPath { get; set; }
+
+            [Option('m', "Migration", Required = true, HelpText = "Path to migration file")]
+            public string MigrationPath { get; set; }
+        }
+
         static void Main(string[] args)
         {
-            var projectPath = args[1];
-            var mainDllPath = args[2];
-            var migrationPath = args[3];
-
-            var references = Assembly.LoadFile(mainDllPath).GetReferencedAssemblies();
-
-            var compilation = CSharpCompilation.Create("Code")
-                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-                .AddReferences(MetadataReference.CreateFromFile(mainDllPath));
-
-            foreach (var name in references)
-            {
-                Assembly assembly;
-
-                try
+            Parser.Default.ParseArguments<CliOptions>(args)
+                .WithParsed(o =>
                 {
-                    assembly = Assembly.Load(name);
-                }
-                catch
-                {
-                    assembly = Assembly.LoadFile(args[3]);
-                }
+                    var references = Assembly.LoadFile(o.MainDllPath).GetReferencedAssemblies();
 
-                compilation = compilation.AddReferences(MetadataReference.CreateFromFile(assembly.Location));
-            }
+                    var compilation = CSharpCompilation.Create("Code")
+                        .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+                        .AddReferences(MetadataReference.CreateFromFile(o.MainDllPath));
 
-            var trees = new List<SyntaxTree>();
-            foreach (var filePath in Directory.GetFiles(projectPath, "*.cs", SearchOption.AllDirectories))
-            {
-                var code = File.ReadAllText(filePath);
-                var tree = CSharpSyntaxTree.ParseText(code);
-                tree = tree.WithRootAndOptions(new AnnotationVisitor().Visit(tree.GetRoot()), tree.Options);
+                    foreach (var name in references)
+                    {
+                        Assembly assembly;
 
-                trees.Add(tree);
-            }
+                        try
+                        {
+                            assembly = Assembly.Load(name);
+                        }
+                        catch
+                        {
+                            assembly = Assembly.LoadFile(args[3]);
+                        }
 
-            compilation = compilation.AddSyntaxTrees(trees);
+                        compilation = compilation.AddReferences(MetadataReference.CreateFromFile(assembly.Location));
+                    }
 
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+                    var trees = new List<SyntaxTree>();
+                    foreach (var filePath in Directory.GetFiles(o.ProjectPath, "*.cs", SearchOption.AllDirectories))
+                    {
+                        var code = File.ReadAllText(filePath);
+                        var tree = CSharpSyntaxTree.ParseText(code);
+                        tree = tree.WithRootAndOptions(new AnnotationVisitor().Visit(tree.GetRoot()), tree.Options);
 
-            var migration = MigrationLoader.FromPath(migrationPath);
+                        trees.Add(tree);
+                    }
 
-            foreach (var tree in trees)
-            {
-                var context = new MigrationContext();
-                context.Populate(compilation, tree);
+                    compilation = compilation.AddSyntaxTrees(trees);
 
-                var ast = migration.Apply(tree, context);
-                Console.WriteLine(ast.ToString());
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine();
-            }
+                    var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            watch.Stop();
-            Console.WriteLine("Refactoring took:" + watch.ElapsedMilliseconds);
+                    var migration = MigrationLoader.FromPath(o.MigrationPath);
+
+                    foreach (var tree in trees)
+                    {
+                        var context = new MigrationContext();
+                        context.Populate(compilation, tree);
+
+                        var ast = migration.Apply(tree, context);
+                        Console.WriteLine(ast.ToString());
+                        Console.WriteLine();
+                        Console.WriteLine();
+                        Console.WriteLine();
+                    }
+
+                    watch.Stop();
+                    Console.WriteLine("Refactoring took:" + watch.ElapsedMilliseconds);
+                });
         }
     }
 }
