@@ -28,6 +28,7 @@ namespace LibAdapter.Tool
             Parser.Default.ParseArguments<CliOptions>(args)
                 .WithParsed(o =>
                 {
+                    Console.WriteLine("Compiling project");
                     var manager = new AnalyzerManager();
                     var project = manager.GetProject(o.ProjectPath);
                     var result = project.Build().Results.ElementAt(0);
@@ -62,6 +63,8 @@ namespace LibAdapter.Tool
 
                     foreach (var (tree, path) in trees)
                     {
+                        Console.WriteLine("Running migration on " + path);
+
                         var context = new MigrationContext();
                         context.Populate(compilation, tree);
 
