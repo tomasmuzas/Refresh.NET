@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Buildalyzer;
 using CommandLine;
 using LibAdapter.Components.Migrations;
@@ -43,32 +44,31 @@ namespace LibAdapter.Tool
                     var compilation = CSharpCompilation.Create("Code")
                         .AddReferences(references.Select(s => MetadataReference.CreateFromFile(s)));
 
-                    var trees = new List<SyntaxTree>();
+                    var trees = new List<(SyntaxTree tree, string path)>();
                     foreach (var filePath in sourceFiles)
                     {
                         var code = File.ReadAllText(filePath);
                         var tree = CSharpSyntaxTree.ParseText(code);
                         tree = tree.WithRootAndOptions(new AnnotationVisitor().Visit(tree.GetRoot()), tree.Options);
 
-                        trees.Add(tree);
+                        trees.Add((tree, filePath));
                     }
 
-                    compilation = compilation.AddSyntaxTrees(trees);
+                    compilation = compilation.AddSyntaxTrees(trees.Select(t => t.tree));
 
                     var watch = System.Diagnostics.Stopwatch.StartNew();
 
                     var migration = MigrationLoader.FromPath(o.MigrationPath);
 
-                    foreach (var tree in trees)
+                    foreach (var (tree, path) in trees)
                     {
                         var context = new MigrationContext();
                         context.Populate(compilation, tree);
 
                         var ast = migration.Apply(tree, context);
-                        Console.WriteLine(ast.ToString());
-                        Console.WriteLine();
-                        Console.WriteLine();
-                        Console.WriteLine();
+                        var file = File.OpenWrite(path);
+                        file.Write(Encoding.UTF8.GetBytes(ast.ToString()));
+                        file.Flush();
                     }
 
                     watch.Stop();
