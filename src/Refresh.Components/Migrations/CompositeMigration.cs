@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 
-namespace LibAdapter.Components.Migrations
+namespace Refresh.Components.Migrations
 {
     public class CompositeMigration : IMigration
     {

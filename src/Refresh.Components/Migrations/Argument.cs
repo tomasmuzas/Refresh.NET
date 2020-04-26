@@ -1,4 +1,4 @@
-﻿namespace LibAdapter.Components.Migrations
+﻿namespace Refresh.Components.Migrations
 {
     public class Argument
     {

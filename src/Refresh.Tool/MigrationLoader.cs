@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using LibAdapter.Components.Migrations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
+using Refresh.Components.Migrations;
 
-namespace LibAdapter.Tool
+namespace Refresh.Tool
 {
     public class MigrationLoader
     {

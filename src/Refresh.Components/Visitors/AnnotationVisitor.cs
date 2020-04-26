@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace LibAdapter.Components.Visitors
+namespace Refresh.Components.Visitors
 {
     public class AnnotationVisitor : CSharpSyntaxRewriter
     {

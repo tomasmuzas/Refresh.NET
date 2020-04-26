@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LibAdapter.Components.Migrations;
-using LibAdapter.Components.Visitors.RenameOperations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Refresh.Components.Migrations;
+using Refresh.Components.Visitors.RenameOperations;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace LibAdapter.Components.Visitors.ReplaceOperations
+namespace Refresh.Components.Visitors.ReplaceOperations
 {
     public class ReplaceMethodVisitor : MethodInvocationVisitor
     {
@@ -73,7 +73,7 @@ namespace LibAdapter.Components.Visitors.ReplaceOperations
             var argList = ArgumentList(
                 SeparatedList(arguments.Select(a =>
                 {
-                    var newIdentifier = IdentifierName(a.Type);
+                    var newIdentifier = IdentifierName((string) a.Type);
                     newIdentifier = (IdentifierNameSyntax) new AnnotationVisitor().Visit(newIdentifier);
 
                     _context.UpdateNodeType(newIdentifier, a.Type);

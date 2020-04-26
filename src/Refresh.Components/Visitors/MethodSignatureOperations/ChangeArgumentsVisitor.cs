@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using LibAdapter.Components.Migrations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Refresh.Components.Migrations;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace LibAdapter.Components.Visitors.MethodSignatureOperations
+namespace Refresh.Components.Visitors.MethodSignatureOperations
 {
     public class ChangeArgumentsVisitor : MethodInvocationVisitor
     {

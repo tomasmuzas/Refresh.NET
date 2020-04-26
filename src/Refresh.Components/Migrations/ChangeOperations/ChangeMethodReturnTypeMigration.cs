@@ -1,8 +1,7 @@
-﻿using System;
-using LibAdapter.Components.Visitors;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
+using Refresh.Components.Visitors;
 
-namespace LibAdapter.Components.Migrations.ChangeOperations
+namespace Refresh.Components.Migrations.ChangeOperations
 {
     public class ChangeMethodReturnTypeMigration : IMigration
     {

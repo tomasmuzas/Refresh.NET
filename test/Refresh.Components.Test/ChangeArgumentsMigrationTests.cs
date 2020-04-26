@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using LibAdapter.Components.Migrations;
-using LibAdapter.Components.Migrations.MethodSignatureOperations;
+using Refresh.Components.Migrations;
+using Refresh.Components.Migrations.MethodSignatureOperations;
 using Xunit;
 
-namespace LibAdapterTests
+namespace Refresh.Components.Test
 {
     public class ChangeArgumentsMigrationTests : MigrationTestBase
     {

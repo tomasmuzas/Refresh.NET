@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace LibAdapter.Components.Migrations
+namespace Refresh.Components.Migrations
 {
     public class Method
     {

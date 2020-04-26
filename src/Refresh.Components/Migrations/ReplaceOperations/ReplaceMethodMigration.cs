@@ -1,7 +1,7 @@
-﻿using LibAdapter.Components.Visitors.ReplaceOperations;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
+using Refresh.Components.Visitors.ReplaceOperations;
 
-namespace LibAdapter.Components.Migrations.ReplaceOperations
+namespace Refresh.Components.Migrations.ReplaceOperations
 {
     public class ReplaceMethodMigration : IMigration
     {

@@ -1,8 +1,8 @@
-﻿using LibAdapter.Components.Migrations;
-using LibAdapter.Components.Migrations.RenameOperations;
+﻿using Refresh.Components.Migrations;
+using Refresh.Components.Migrations.RenameOperations;
 using Xunit;
 
-namespace LibAdapterTests
+namespace Refresh.Components.Test
 {
     public class RenameMethodMigrationTests : MigrationTestBase
     {

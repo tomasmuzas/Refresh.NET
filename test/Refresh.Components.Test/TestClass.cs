@@ -1,4 +1,4 @@
-﻿namespace Test
+﻿namespace Refresh.Components.Test
 {
     public class TestClass
     {

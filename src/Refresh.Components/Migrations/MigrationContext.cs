@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace LibAdapter.Components.Migrations
+namespace Refresh.Components.Migrations
 {
     public class MigrationContext
     {

@@ -1,8 +1,8 @@
-﻿using LibAdapter.Components.Migrations;
-using LibAdapter.Components.Migrations.ReplaceOperations;
+﻿using Refresh.Components.Migrations;
+using Refresh.Components.Migrations.ReplaceOperations;
 using Xunit;
 
-namespace LibAdapterTests
+namespace Refresh.Components.Test
 {
     public class ReplaceClassMigrationTests : MigrationTestBase
     {

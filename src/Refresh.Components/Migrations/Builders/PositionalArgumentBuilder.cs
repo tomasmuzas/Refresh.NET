@@ -1,4 +1,4 @@
-﻿namespace LibAdapter.Components.Migrations.Builders
+﻿namespace Refresh.Components.Migrations.Builders
 {
     public class PositionalArgumentBuilder
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using LibAdapter.Components.Migrations.MethodSignatureOperations;
-using LibAdapter.Components.Migrations.RenameOperations;
-using LibAdapter.Components.Migrations.ReplaceOperations;
+using Refresh.Components.Migrations.MethodSignatureOperations;
+using Refresh.Components.Migrations.RenameOperations;
+using Refresh.Components.Migrations.ReplaceOperations;
 
-namespace LibAdapter.Components.Migrations.Builders
+namespace Refresh.Components.Migrations.Builders
 {
     public class MigrationBuilder
     {

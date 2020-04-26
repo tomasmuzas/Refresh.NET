@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using LibAdapter.Components.Migrations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Refresh.Components.Migrations;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace LibAdapter.Components.Visitors.MethodSignatureOperations
+namespace Refresh.Components.Visitors.MethodSignatureOperations
 {
     public class AddMethodParameterVisitor : MethodInvocationVisitor
     {
@@ -37,7 +37,7 @@ namespace LibAdapter.Components.Visitors.MethodSignatureOperations
                 {
                     var argument = Argument(!string.IsNullOrEmpty(arg.DefaultValueExpression) ?
                         ParseExpression(arg.DefaultValueExpression):
-                        DefaultExpression(IdentifierName(arg.Type)));
+                        DefaultExpression(IdentifierName((string) arg.Type)));
 
                     argList.Insert(arg.Position - 1, argument);
                 }

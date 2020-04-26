@@ -1,9 +1,9 @@
-﻿using LibAdapter.Components.Migrations;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Refresh.Components.Migrations;
 
-namespace LibAdapter.Components.Visitors.RenameOperations
+namespace Refresh.Components.Visitors.RenameOperations
 {
     public class RenameClassVisitor : CSharpSyntaxRewriter
     {

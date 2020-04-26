@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using LibAdapter.Components.Migrations;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Refresh.Components.Migrations;
 
-namespace LibAdapter.Components.Visitors
+namespace Refresh.Components.Visitors
 {
     public class MethodInvocationVisitor: CSharpSyntaxRewriter
     {

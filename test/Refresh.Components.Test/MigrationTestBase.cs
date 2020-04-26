@@ -1,9 +1,9 @@
-﻿using LibAdapter.Components.Migrations;
-using LibAdapter.Components.Visitors;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Refresh.Components.Migrations;
+using Refresh.Components.Visitors;
 
-namespace LibAdapterTests
+namespace Refresh.Components.Test
 {
     public class MigrationTestBase
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using LibAdapter.Components.Visitors.MethodSignatureOperations;
 using Microsoft.CodeAnalysis;
+using Refresh.Components.Visitors.MethodSignatureOperations;
 
-namespace LibAdapter.Components.Migrations.MethodSignatureOperations
+namespace Refresh.Components.Migrations.MethodSignatureOperations
 {
     public class AddArgumentsMigration : IMigration
     {

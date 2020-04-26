@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using Buildalyzer;
 using CommandLine;
-using LibAdapter.Components.Migrations;
-using LibAdapter.Components.Visitors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Refresh.Components.Migrations;
+using Refresh.Components.Visitors;
 
-namespace LibAdapter.Tool 
+namespace Refresh.Tool 
 {
     class Program
     {
@@ -70,7 +70,7 @@ namespace LibAdapter.Tool
 
                         var ast = migration.Apply(tree, context);
                         var file = File.OpenWrite(path);
-                        file.Write(Encoding.UTF8.GetBytes(ast.ToString()));
+                        file.Write(Encoding.UTF8.GetBytes((string) ast.ToString()));
                         file.Flush();
                     }
 

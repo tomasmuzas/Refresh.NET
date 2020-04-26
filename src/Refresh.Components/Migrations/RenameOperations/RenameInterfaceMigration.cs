@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using LibAdapter.Components.Visitors.RenameOperations;
 using Microsoft.CodeAnalysis;
+using Refresh.Components.Visitors.RenameOperations;
 
-namespace LibAdapter.Components.Migrations.RenameOperations
+namespace Refresh.Components.Migrations.RenameOperations
 {
     public class RenameInterfaceMigration : IMigration
     {
