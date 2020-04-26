@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <PackageId>LibAdapter.Components</PackageId>
+    <PackageId>Refresh.Components</PackageId>
     <Version>1.0.2</Version>
     <Authors>Tomas Mūžas</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyName>Refresh.Components</AssemblyName>
+    <RootNamespace>Refresh.Components</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

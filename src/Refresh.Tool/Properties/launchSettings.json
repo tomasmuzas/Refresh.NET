@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LibAdapter": {
+        "commandName": "Project",
+        "commandLineArgs": "-p C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapterTestSolution\\LibAdapterTestSolution.csproj -m C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapterTestSolution\\CustomMigration.cs"
+    }
+  }
+}

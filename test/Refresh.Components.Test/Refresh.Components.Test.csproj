@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\LibAdapter.Components\LibAdapter.Components.csproj" />
+    <ProjectReference Include="..\..\src\Refresh.Components\Refresh.Components.csproj" />
   </ItemGroup>
 
 </Project>

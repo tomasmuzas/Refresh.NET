@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
 	  <PackAsTool>true</PackAsTool>
-	  <ToolCommandName>shiny</ToolCommandName>
+	  <ToolCommandName>refresh</ToolCommandName>
 	  <PackageOutputPath>./nupkg</PackageOutputPath>
 	  <Version>1.0.2</Version>
   </PropertyGroup>

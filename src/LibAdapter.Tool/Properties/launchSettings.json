@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "LibAdapter": {
-      "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapterTestSolution\\Changes.txt C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapterTestSolution C:\\Users\\Tomas\\Desktop\\Projektinis\\LibAdapterTestSolution\\bin\\Debug\\netcoreapp3.0\\LibAdapterTestSolution.dll C:\\Users\\Tomas\\Desktop\\\\Bakalaurinis\\LibAdapter\\src\\Migrations\\CustomMigration.cs"
-    }
-  }
-}
