@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Refresh.Components.Migrations.ChangeOperations;
 using Refresh.Components.Migrations.MethodSignatureOperations;
 using Refresh.Components.Migrations.RenameOperations;
 using Refresh.Components.Migrations.ReplaceOperations;
@@ -28,6 +29,12 @@ namespace Refresh.Components.Migrations.Builders
             return this;
         }
 
+        public MigrationBuilder ChangeMemberType(string type, string memberName, string newType)
+        {
+            _migration.AddMigration(new ChangeMemberTypeMigration(type, memberName, newType));
+            return this;
+        }
+
         public MigrationBuilder RenameNamespace(string namespaceName, string newName)
         {
             _migration.AddMigration(new RenameNamespaceMigration(namespaceName, newName));
@@ -46,6 +53,21 @@ namespace Refresh.Components.Migrations.Builders
             methodSetup.Invoke(methodBuilder);
             var method = methodBuilder.Build();
             _migration.AddMigration(new RenameMethodMigration(method, newName));
+            return this;
+        }
+
+        public MigrationBuilder ChangeMethodReturnType(Method method, string newType)
+        {
+            _migration.AddMigration(new ChangeMethodReturnTypeMigration(method, newType));
+            return this;
+        }
+
+        public MigrationBuilder ChangeMethodReturnType(Action<MethodBuilder> methodSetup, string newType)
+        {
+            var methodBuilder = new MethodBuilder();
+            methodSetup.Invoke(methodBuilder);
+            var method = methodBuilder.Build();
+            _migration.AddMigration(new ChangeMethodReturnTypeMigration(method, newType));
             return this;
         }
 
