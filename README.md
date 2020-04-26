@@ -53,15 +53,16 @@ RenameNamespace(string namespaceName, string newName);
 ReplaceClass(string oldType, string newType);
 ReplaceMethod(Method method, string newMethodName);
 
-AddArguments(Method method, Argument[] arguments);
-ChangeArgument(Method method, string argumentName, Argument newArgument);
-RemoveArgument(Method method, string argumentName);
-ReorderArguments(Method method, int[] newArgumentOrder);
+AddArguments(Method method, List<PositionalArgument> arguments);
+ChangeArguments(Method method, string argumentName, List<PositionalArgument> newArgument);
+RemoveArguments(Method method, List<int> positions);
+ReorderArguments(Method method, List<int> newArgumentOrder);
 
 ChangeMethodReturnType(Method method, string newReturnType);
+ChangeMemberType(string type, string memberName, string newType);
 ```
 
-Overloads are provided in order to build `Method`, `Argument` and `Argument[]` types.
+Overloads are provided in order to build `Method`, `Argument` and `List<PositionalArgument>` types.
 
 Usage:
 ```csharp
