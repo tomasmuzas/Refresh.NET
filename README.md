@@ -1,7 +1,7 @@
 # Refresh.NET
 A simple CLI tool to easily migrate .NET projects by writing custom migrations.
 
-This tool is built with intention to create shareable migrations to adapt to library, framework or even language updates.
+This tool is built with intention to create shareable migrations to be able to easily adapt to library, framework or even language updates.
 
 # Supported migrations:
 * Rename class, interface, method, member, namespace
