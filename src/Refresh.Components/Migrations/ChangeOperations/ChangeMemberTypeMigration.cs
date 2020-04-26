@@ -3,20 +3,26 @@ using Refresh.Components.Visitors.ChangeOperations;
 
 namespace Refresh.Components.Migrations.ChangeOperations
 {
-    public class ChangeMethodReturnTypeMigration : IMigration
+    public class ChangeMemberTypeMigration : IMigration
     {
-        private readonly Method _method;
+        private readonly string _type;
+        private readonly string _memberName;
         private readonly string _returnType;
 
-        public ChangeMethodReturnTypeMigration(Method method, string returnType)
+        public ChangeMemberTypeMigration(string type, string memberName, string returnType)
         {
-            _method = method;
+            _type = type;
+            _memberName = memberName;
             _returnType = returnType;
         }
 
         public SyntaxTree Apply(SyntaxTree initialAST, MigrationContext context)
         {
-            var visitor = new ChangeMethodReturnTypeVisitor(context, _method, _returnType);
+            var visitor = new ChangeMemberTypeVisitor(
+                context,
+                _type,
+                _memberName,
+                _returnType);
             var ast = visitor.Visit(initialAST.GetRoot());
 
             return ast.SyntaxTree;
