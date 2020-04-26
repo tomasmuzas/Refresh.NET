@@ -12,11 +12,11 @@
   <ItemGroup>
     <PackageReference Include="Buildalyzer" Version="2.6.0" />
     <PackageReference Include="CommandLineParser" Version="2.7.0" />
-    <PackageReference Include="LibAdapter.Components" Version="1.0.2" />
     <PackageReference Include="Microsoft.CodeAnalysis" Version="3.5.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.5.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.5.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="3.5.0" />
+    <PackageReference Include="Refresh.Components" Version="1.0.2" />
   </ItemGroup>
 
 </Project>
