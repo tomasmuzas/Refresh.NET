@@ -23,6 +23,10 @@ Use the tool:
 
 # Migration file
 
+Install Refresh.Components Nuget package in order to get Intelli-Sense support:
+
+`Install-Package Refresh.Components`
+
 `Migration.cs` can be any C\# class, implementing [IMigration](blob/master/src/Refresh.Components/Migrations/IMigration.cs) and it can have any name (Migration, MyMigration, CustomMigration etc.).
 
 ## IMigration interface
