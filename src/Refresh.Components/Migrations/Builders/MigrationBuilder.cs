@@ -4,6 +4,7 @@ using Refresh.Components.Migrations.ChangeOperations;
 using Refresh.Components.Migrations.MethodSignatureOperations;
 using Refresh.Components.Migrations.RenameOperations;
 using Refresh.Components.Migrations.ReplaceOperations;
+using Refresh.Components.Migrations.SplitOperations;
 
 namespace Refresh.Components.Migrations.Builders
 {
@@ -178,6 +179,36 @@ namespace Refresh.Components.Migrations.Builders
             methodSetup.Invoke(methodBuilder);
             var method = methodBuilder.Build();
             _migration.AddMigration(new ReorderArgumentsMigration(method, positions));
+            return this;
+        }
+
+        public MigrationBuilder SplitMethod(
+            Method method,
+            Method newMethod1,
+            Method newMethod2)
+        {
+            _migration.AddMigration(new SplitMethodMigration(method, newMethod1, newMethod2));
+            return this;
+        }
+
+        public MigrationBuilder SplitMethod(
+            Action<MethodBuilder> methodSetup,
+            Action<MethodBuilder> newMethod1Setup,
+            Action<MethodBuilder> newMethod2Setup)
+        {
+            var methodBuilder = new MethodBuilder();
+            methodSetup.Invoke(methodBuilder);
+            var method = methodBuilder.Build();
+
+            var newMethod1Builder = new MethodBuilder();
+            newMethod1Setup.Invoke(newMethod1Builder);
+            var newMethod1 = methodBuilder.Build();
+
+            var newMethod2Builder = new MethodBuilder();
+            newMethod2Setup.Invoke(newMethod2Builder);
+            var newMethod2 = methodBuilder.Build();
+
+            _migration.AddMigration(new SplitMethodMigration(method, newMethod1, newMethod2));
             return this;
         }
 
