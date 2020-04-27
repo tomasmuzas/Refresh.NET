@@ -60,6 +60,8 @@ ReorderArguments(Method method, List<int> newArgumentOrder);
 
 ChangeMethodReturnType(Method method, string newReturnType);
 ChangeMemberType(string type, string memberName, string newType);
+
+SplitMethod(Method method, Method newMethod1, Method newMethod2);
 ```
 
 Overloads are provided in order to build `Method`, `Argument` and `List<PositionalArgument>` types.
