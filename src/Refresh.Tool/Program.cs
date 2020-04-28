@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Buildalyzer;
 using CommandLine;
 using Microsoft.CodeAnalysis;
@@ -69,9 +68,7 @@ namespace Refresh.Tool
                         context.Populate(compilation, tree);
 
                         var ast = migration.Apply(tree, context);
-                        var file = File.OpenWrite(path);
-                        file.Write(Encoding.UTF8.GetBytes((string) ast.ToString()));
-                        file.Flush();
+                        File.WriteAllText(path, ast.ToString());
                     }
 
                     watch.Stop();
