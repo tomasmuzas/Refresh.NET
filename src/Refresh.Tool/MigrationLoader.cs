@@ -23,6 +23,7 @@ namespace Refresh.Tool
             var refs = new List<MetadataReference>
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51").Location),
                 MetadataReference.CreateFromFile(typeof(IMigration).Assembly.Location)
             };
 

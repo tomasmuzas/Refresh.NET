@@ -30,13 +30,11 @@ namespace Refresh.Components.Visitors.ChangeOperations
             node = (LocalDeclarationStatementSyntax) base.VisitLocalDeclarationStatement(node);
 
             var initializer = node.Declaration
-                .DescendantNodes()
-                .OfType<EqualsValueClauseSyntax>()
+                .Descendants<EqualsValueClauseSyntax>()
                 .FirstOrDefault();
 
             var memberAccess = initializer?
-                .DescendantNodes()
-                .OfType<MemberAccessExpressionSyntax>()
+                .Descendants<MemberAccessExpressionSyntax>()
                 .FirstOrDefault();
 
             if (memberAccess != null

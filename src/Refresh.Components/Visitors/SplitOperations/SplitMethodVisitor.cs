@@ -32,8 +32,7 @@ namespace Refresh.Components.Visitors.SplitOperations
             node = (BlockSyntax) base.VisitBlock(node);
 
             var matchingInvocations = node
-                .DescendantNodes()
-                .OfType<InvocationExpressionSyntax>()
+                .Descendants<InvocationExpressionSyntax>()
                 .Where(i => InvocationMatches(i, _method.Type, _method.Name))
                 .ToList();
 
@@ -46,8 +45,7 @@ namespace Refresh.Components.Visitors.SplitOperations
                         .WithTriviaFrom(invocation));
 
                 var variable = invocation.Expression
-                    .DescendantNodes()
-                    .OfType<IdentifierNameSyntax>()
+                    .Descendants<IdentifierNameSyntax>()
                     .First();
 
                 node = node.AddStatements(ExpressionStatement(

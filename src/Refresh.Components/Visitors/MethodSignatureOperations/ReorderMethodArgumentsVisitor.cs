@@ -27,7 +27,7 @@ namespace Refresh.Components.Visitors.MethodSignatureOperations
             node = (InvocationExpressionSyntax)base.VisitInvocationExpression(node);
             if (InvocationMatches(node, FullTypeName, MethodName))
             {
-                InvocationExpressionSyntax newInvocation = node;
+                var newInvocation = node;
 
                 var argList = new List<(ArgumentSyntax syntax, int position)>();
                 argList.AddRange(node.ArgumentList.Arguments.Select((s, i) => (s, ArgumentOrder[i])));

@@ -28,7 +28,7 @@ namespace Refresh.Components.Visitors.MethodSignatureOperations
             invocation = (InvocationExpressionSyntax) base.VisitInvocationExpression(invocation);
             if (InvocationMatches(invocation, FullTypeName, MethodName))
             {
-                InvocationExpressionSyntax newInvocation = invocation;
+                var newInvocation = invocation;
 
                 var argList = new List<ArgumentSyntax>();
                 argList.AddRange(invocation.ArgumentList.Arguments);
