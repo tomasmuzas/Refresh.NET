@@ -4,7 +4,7 @@ namespace Refresh.Components.Migrations
 {
     public class Method
     {
-        public string Type { get; set; }
+        public FullType Type { get; set; }
 
         public string Name { get; set; }
 

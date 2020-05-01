@@ -6,8 +6,8 @@ namespace Refresh.Components.Migrations.ReplaceOperations
 {
     public class ReplaceClassMigration : IMigration
     {
-        private readonly string _type;
-        private readonly string _newType;
+        private readonly FullType _type;
+        private readonly FullType _newType;
         private readonly IEnumerable<Argument> _constructorArgument;
 
         public ReplaceClassMigration(string type, string newType, IEnumerable<Argument> constructorArgument)

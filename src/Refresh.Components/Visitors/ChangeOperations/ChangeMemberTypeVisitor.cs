@@ -9,15 +9,15 @@ namespace Refresh.Components.Visitors.ChangeOperations
     public class ChangeMemberTypeVisitor : CSharpSyntaxRewriter
     {
         private readonly MigrationContext _context;
-        private readonly string _type;
+        private readonly FullType _type;
         private readonly string _memberName;
-        private readonly string _returnType;
+        private readonly FullType _returnType;
 
         public ChangeMemberTypeVisitor(
             MigrationContext context,
-            string type,
+            FullType type,
             string memberName,
-            string returnType)
+            FullType returnType)
         {
             _context = context;
             _type = type;

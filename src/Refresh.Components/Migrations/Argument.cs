@@ -2,7 +2,7 @@
 {
     public class Argument
     {
-        public string Type { get; set; }
+        public FullType Type { get; set; }
 
         public string Name { get; set; }
 

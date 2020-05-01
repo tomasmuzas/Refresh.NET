@@ -6,9 +6,9 @@ namespace Refresh.Components.Migrations.ChangeOperations
     public class ChangeMethodReturnTypeMigration : IMigration
     {
         private readonly Method _method;
-        private readonly string _returnType;
+        private readonly FullType _returnType;
 
-        public ChangeMethodReturnTypeMigration(Method method, string returnType)
+        public ChangeMethodReturnTypeMigration(Method method, FullType returnType)
         {
             _method = method;
             _returnType = returnType;

@@ -8,7 +8,7 @@ namespace Refresh.Components.Visitors.RenameOperations
     public class RenameMemberVisitor : CSharpSyntaxRewriter
     {
         private readonly MigrationContext _context;
-        private readonly string _type;
+        private readonly FullType _type;
         private readonly string _memberName;
         private readonly string _newName;
 

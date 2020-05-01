@@ -11,14 +11,14 @@ namespace Refresh.Components.Visitors.ReplaceOperations
     public class ReplaceClassVisitor : CSharpSyntaxRewriter
     {
         private readonly MigrationContext _context;
-        private readonly string _type; 
-        private readonly string _newType;
+        private readonly FullType _type; 
+        private readonly FullType _newType;
         private readonly IEnumerable<Argument> _constructorArguments;
 
         public ReplaceClassVisitor(
             MigrationContext context,
-            string type,
-            string newType,
+            FullType type,
+            FullType newType,
             IEnumerable<Argument> constructorArguments)
         {
             _context = context;

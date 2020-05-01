@@ -10,9 +10,9 @@ namespace Refresh.Components.Visitors.ChangeOperations
     {
         private readonly MigrationContext _context;
         private readonly Method _method;
-        private readonly string _returnType;
+        private readonly FullType _returnType;
 
-        public ChangeMethodReturnTypeVisitor(MigrationContext context, Method method, string returnType)
+        public ChangeMethodReturnTypeVisitor(MigrationContext context, Method method, FullType returnType)
             :base(context)
         {
             _context = context;

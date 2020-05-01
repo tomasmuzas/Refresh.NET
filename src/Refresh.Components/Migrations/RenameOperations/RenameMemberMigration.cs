@@ -5,11 +5,11 @@ namespace Refresh.Components.Migrations.RenameOperations
 {
     public class RenameMemberMigration : IMigration
     {
-        private readonly string _type;
+        private readonly FullType _type;
         private readonly string _memberName;
         private readonly string _newMemberName;
 
-        public RenameMemberMigration(string type, string memberName, string newMemberName)
+        public RenameMemberMigration(FullType type, string memberName, string newMemberName)
         {
             _type = type;
             _memberName = memberName;

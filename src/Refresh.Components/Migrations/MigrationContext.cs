@@ -7,9 +7,9 @@ namespace Refresh.Components.Migrations
 {
     public class MigrationContext
     {
-        private readonly Dictionary<string, string> containingNodeTypes = new Dictionary<string, string>();
+        private readonly Dictionary<string, FullType> containingNodeTypes = new Dictionary<string, FullType>();
         
-        private readonly Dictionary<string, string> nodeTypes = new Dictionary<string, string>();
+        private readonly Dictionary<string, FullType> nodeTypes = new Dictionary<string, FullType>();
 
         public void Populate(CSharpCompilation compilation, SyntaxTree tree)
         {
@@ -27,12 +27,12 @@ namespace Refresh.Components.Migrations
             }
         }
 
-        public string GetNodeContainingClassType(SyntaxNode node)
+        public FullType GetNodeContainingClassType(SyntaxNode node)
         {
             return containingNodeTypes[MakeKey(node)];
         }
 
-        public string GetNodeType(SyntaxNode node)
+        public FullType GetNodeType(SyntaxNode node)
         {
             return nodeTypes[MakeKey(node)];
         }
@@ -49,7 +49,7 @@ namespace Refresh.Components.Migrations
             nodeTypes.Add(MakeKey(node), newType);
         }
 
-        public void ReplaceType(string type, string newType)
+        public void ReplaceType(FullType type, FullType newType)
         {
             var nodesToReplace = nodeTypes
                 .Where(kv => kv.Value == type)
