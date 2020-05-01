@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <PackageId>Refresh.Components</PackageId>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
     <Authors>Tomas Mūžas</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyName>Refresh.Components</AssemblyName>

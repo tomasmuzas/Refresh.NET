@@ -6,13 +6,13 @@
 	  <PackAsTool>true</PackAsTool>
 	  <ToolCommandName>refresh</ToolCommandName>
 	  <PackageOutputPath>./nupkg</PackageOutputPath>
-	  <Version>1.0.7</Version>
+	  <Version>1.0.8</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Buildalyzer" Version="2.6.0" />
     <PackageReference Include="CommandLineParser" Version="2.7.0" />
-    <PackageReference Include="Refresh.Components" Version="1.0.7" />
+    <PackageReference Include="Refresh.Components" Version="1.0.8" />
   </ItemGroup>
 
 </Project>
