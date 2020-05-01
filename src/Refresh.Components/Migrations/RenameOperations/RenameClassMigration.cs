@@ -6,10 +6,10 @@ namespace Refresh.Components.Migrations.RenameOperations
 {
     public class RenameClassMigration : IMigration
     {
-        private readonly string _type;
+        private readonly FullType _type;
         private readonly string _newName;
 
-        public RenameClassMigration(string type, string newName)
+        public RenameClassMigration(FullType type, string newName)
         {
             _type = type;
             _newName = newName;
@@ -20,9 +20,7 @@ namespace Refresh.Components.Migrations.RenameOperations
             var visitor = new RenameClassVisitor(context, _type, _newName);
             var newAst = visitor.Visit(initialAST.GetRoot());
 
-            var parts = _type.Split(".");
-            var ns = string.Join(".", parts.Take(parts.Length - 1));
-            var newType = ns + "." + _newName;
+            var newType = _type.Namespace + "." + _newName;
 
             context.ReplaceType(_type, newType);
 

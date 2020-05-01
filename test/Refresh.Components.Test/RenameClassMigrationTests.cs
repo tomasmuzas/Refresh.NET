@@ -82,5 +82,49 @@ namespace Refresh.Components.Test
 
             Assert.Equal(expected, refactoredAst.ToString());
         }
+
+        [Fact]
+        public void Apply_RenamesOnlyTypes_WhenTheClassIsParameter()
+        {
+            var source = @"
+            namespace Test
+            {
+                public class TestClass
+                {
+                    public void Do(){}
+                }
+
+                public class Program
+                {
+                    public void DoSomething(TestClass test)
+                    {
+                        test.Do();
+                    }
+                }
+            }";
+
+            var expected = @"
+            namespace Test
+            {
+                public class TestClass
+                {
+                    public void Do(){}
+                }
+
+                public class Program
+                {
+                    public void DoSomething(NewClass test)
+                    {
+                        test.Do();
+                    }
+                }
+            }";
+
+            var refactoredAst = PerformMigration(
+                new RenameClassMigration("Test.TestClass", "NewClass"),
+                source);
+
+            Assert.Equal(expected, refactoredAst.ToString());
+        }
     }
 }
