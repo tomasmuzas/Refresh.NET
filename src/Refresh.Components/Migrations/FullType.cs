@@ -1,9 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Refresh.Components.Migrations
 {
     public class FullType
     {
+        public IEnumerable<FullType> GenericArguments = new List<FullType>();
+
         public string Namespace { get; }
 
         public string ClassName { get; }
@@ -13,9 +18,23 @@ namespace Refresh.Components.Migrations
         public FullType(string type)
         {
             FullValue = type;
+
             var parts = type.Split(".");
             Namespace = string.Join(',', parts.Take(parts.Length - 1));
-            ClassName = parts.Last();
+            
+            var className = parts.Last();
+            var GenericPartMatch = Regex.Match(className, @"<([\w\.\s,]*)>");
+
+            ClassName = className;
+
+            if (GenericPartMatch.Success)
+            {
+                ClassName = ClassName.Replace(GenericPartMatch.Value, "");
+
+                GenericArguments = Regex
+                    .Split(GenericPartMatch.Groups[1].Value, @",\s?")
+                    .Select(a => new FullType(a));
+            }
         }
 
         public static implicit operator FullType(string type)

@@ -59,6 +59,66 @@ namespace Refresh.Components.Test
         }
 
         [Fact]
+        public void Apply_RenamesExtensionMethodInvocations()
+        {
+            var source = @"
+            namespace Test
+            {
+                public class TestClass
+                {
+                }
+
+                public static class TestClassExtensions
+                {
+                    public static void TestMethod(this TestClass obj){}
+                }
+
+                public class Program
+                {
+                    public void Main()
+                    {
+                        var instance = new TestClass();
+                        instance.TestMethod();
+                    }
+                }
+            }";
+
+            var expected = @"
+            namespace Test
+            {
+                public class TestClass
+                {
+                }
+
+                public static class TestClassExtensions
+                {
+                    public static void TestMethod(this TestClass obj){}
+                }
+
+                public class Program
+                {
+                    public void Main()
+                    {
+                        var instance = new TestClass();
+                        instance.NewMethod();
+                    }
+                }
+            }";
+
+            var refactoredAst = PerformMigration(
+                new RenameMethodMigration(
+                    new Method
+                    {
+                        Type = "Test.TestClassExtensions",
+                        Name = "TestMethod"
+                    },
+                    "NewMethod"),
+                source);
+
+            Assert.Equal(expected, refactoredAst.ToString());
+        }
+
+        [Fact]
         public void Apply_RenamesMethodInvocations_WithVariablesAsParameters()
         {
             var source = @"

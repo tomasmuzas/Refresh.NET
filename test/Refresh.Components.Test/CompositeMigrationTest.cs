@@ -41,7 +41,7 @@ namespace Refresh.Components.Test
                 {
                     public void Main()
                     {
-                        NewClass instance = new NewClass();
+                        var instance = new NewClass();
                         instance.NewMethod(new object());
                     }
                 }

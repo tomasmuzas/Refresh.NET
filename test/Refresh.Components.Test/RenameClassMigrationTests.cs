@@ -35,7 +35,7 @@ namespace Refresh.Components.Test
                 {
                     public void Main()
                     {
-                        NewClass instance = new NewClass();
+                        var instance = new NewClass();
                     }
                 }
             }";
@@ -73,6 +73,84 @@ namespace Refresh.Components.Test
                 public class Program
                 {
                     NewClass instance;
+                }
+            }";
+
+            var refactoredAst = PerformMigration(
+                new RenameClassMigration("Test.TestClass", "NewClass"),
+                source);
+
+            Assert.Equal(expected, refactoredAst.ToString());
+        }
+
+        [Fact]
+        public void Apply_RenamesGenericInstantiatedClass()
+        {
+            var source = @"
+            namespace Test
+            {
+                public class TestClass<T>
+                {
+                }
+
+                public class Program
+                {
+                    public void Main()
+                    {
+                        var instance = new TestClass<string>();
+                    }
+                }
+            }";
+
+            var expected = @"
+            namespace Test
+            {
+                public class TestClass<T>
+                {
+                }
+
+                public class Program
+                {
+                    public void Main()
+                    {
+                        var instance = new NewClass<string>();
+                    }
+                }
+            }";
+
+            var refactoredAst = PerformMigration(
+                new RenameClassMigration("Test.TestClass", "NewClass"),
+                source);
+
+            Assert.Equal(expected, refactoredAst.ToString());
+        }
+
+        [Fact]
+        public void Apply_RenamesGenericClassTypedVariable()
+        {
+            var source = @"
+            namespace Test
+            {
+                public class TestClass<T>
+                {
+                }
+
+                public class Program
+                {
+                    TestClass<string> instance;
+                }
+            }";
+
+            var expected = @"
+            namespace Test
+            {
+                public class TestClass<T>
+                {
+                }
+
+                public class Program
+                {
+                    NewClass<string> instance;
                 }
             }";
 
