@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Buildalyzer;
+using Buildalyzer.Environment;
 using CommandLine;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -59,7 +60,13 @@ namespace Refresh.Tool
                         Console.WriteLine($"Compiling project {projectPath}");
                         var manager = new AnalyzerManager();
                         var project = manager.GetProject(projectPath);
-                        var result = project.Build().Results.ElementAt(0);
+
+                        // Don't delete artifacts after building
+                        // Based on https://github.com/daveaglick/Buildalyzer/issues/105
+                        var options = new EnvironmentOptions();
+                        options.TargetsToBuild.Remove("Clean");
+
+                        var result = project.Build(options).Results.ElementAt(0);
 
                         if (!result.Succeeded)
                         {
