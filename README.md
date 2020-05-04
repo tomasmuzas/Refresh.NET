@@ -19,7 +19,9 @@ Install the tool by using:
 
 Use the tool:
 
-`refresh -p Path/To/Project.csproj -m Path/To/Migration.cs`
+`refresh [-p Path/To/Project.csproj | -s Path/To/Solution.sln] -m Path/To/Migration.cs`
+
+If both defined, solution takes precendence over project. 
 
 # Migration file
 
