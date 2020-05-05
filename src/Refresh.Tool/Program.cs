@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Buildalyzer;
-using Buildalyzer.Environment;
+using Buildalyzer.Workspaces;
 using CommandLine;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Onion.SolutionParser.Parser;
 using Refresh.Components.Migrations;
 using Refresh.Components.Visitors;
 
@@ -17,7 +14,7 @@ namespace Refresh.Tool
     {
         private class CliOptions
         {
-            [Option('p', "Project", Required=true, HelpText = "Project to be refactored")]
+            [Option('p', "Project", Required=false, HelpText = "Project to be refactored")]
             public string ProjectPath { get; set; }
 
             [Option('s', "Solution", Required = false, HelpText = "Solution to be refactored")]
@@ -39,75 +36,47 @@ namespace Refresh.Tool
                         return;
                     }
 
-                    var pathsToMigrate = new List<string>();
+                    var workspace = new AdhocWorkspace();
 
                     if (!string.IsNullOrEmpty(o.SolutionPath))
                     {
-                        var solution = SolutionParser.Parse(o.SolutionPath);
-                        var solutionDirectory = Path.GetDirectoryName(o.SolutionPath);
-                        pathsToMigrate = solution.Projects
-                            .Select(p => Path.Join(solutionDirectory, p.Path))
-                            .ToList();
+                        Console.WriteLine("Analyzing solution");
+                        var manager = new AnalyzerManager(o.SolutionPath);
+                        foreach (var p in manager.Projects.Values)
+                        {
+                            p.AddToWorkspace(workspace);
+                        }
                     }
                     else
                     {
-                        pathsToMigrate.Add(o.ProjectPath);
+                        Console.WriteLine("Analyzing project");
+                        var manager = new AnalyzerManager();
+                        manager.GetProject(o.ProjectPath).AddToWorkspace(workspace);
                     }
 
-                    var watch = System.Diagnostics.Stopwatch.StartNew();
-                    foreach (var projectPath in pathsToMigrate)
+                    Console.WriteLine("Loading migration file");
+                    var migration = MigrationLoader.FromPath(o.MigrationPath);
+
+                    foreach (var project in workspace.CurrentSolution.Projects)
                     {
-                        Console.WriteLine($"Compiling project {projectPath}");
-                        var manager = new AnalyzerManager();
-                        var project = manager.GetProject(projectPath);
+                        Console.WriteLine($"Migrating project {project.Name}");
 
-                        // Don't delete artifacts after building
-                        // Based on https://github.com/daveaglick/Buildalyzer/issues/105
-                        var options = new EnvironmentOptions();
-                        options.TargetsToBuild.Remove("Clean");
+                        var compilation = (CSharpCompilation) project.GetCompilationAsync().Result;
 
-                        var result = project.Build(options).Results.ElementAt(0);
-
-                        if (!result.Succeeded)
+                        foreach (var tree in compilation.SyntaxTrees)
                         {
-                            Console.WriteLine("Failed to build a project.");
-                            return;
-                        }
+                            var annotatedTree = tree.WithRootAndOptions(new AnnotationVisitor().Visit(tree.GetRoot()), tree.Options);
+                            compilation = compilation.ReplaceSyntaxTree(tree, annotatedTree);
 
-                        var references = result.References;
-                        var sourceFiles = result.SourceFiles;
-
-                        var compilation = CSharpCompilation.Create("Code")
-                            .AddReferences(references.Select(s => MetadataReference.CreateFromFile(s)));
-
-                        var trees = new List<(SyntaxTree tree, string path)>();
-                        foreach (var filePath in sourceFiles)
-                        {
-                            var code = File.ReadAllText(filePath);
-                            var tree = CSharpSyntaxTree.ParseText(code);
-                            tree = tree.WithRootAndOptions(new AnnotationVisitor().Visit(tree.GetRoot()), tree.Options);
-
-                            trees.Add((tree, filePath));
-                        }
-
-                        compilation = compilation.AddSyntaxTrees(trees.Select(t => t.tree));
-
-                        var migration = MigrationLoader.FromPath(o.MigrationPath);
-
-                        foreach (var (tree, path) in trees)
-                        {
-                            Console.WriteLine("Running migration on " + path);
+                            Console.WriteLine("Running migration on " + tree.FilePath);
 
                             var context = new MigrationContext();
-                            context.Populate(compilation, tree);
+                            context.Populate(compilation, annotatedTree);
 
-                            var ast = migration.Apply(tree, context);
-                            File.WriteAllText(path, ast.ToString());
+                            var ast = migration.Apply(annotatedTree, context);
+                            File.WriteAllText(tree.FilePath, ast.ToString());
                         }
                     }
-                    
-                    watch.Stop();
-                    Console.WriteLine("Refactoring took:" + watch.ElapsedMilliseconds);
                 });
         }
     }
