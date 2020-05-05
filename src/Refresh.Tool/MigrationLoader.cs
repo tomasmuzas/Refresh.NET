@@ -33,18 +33,19 @@ namespace Refresh.Tool
                 .Select(assembly => 
                     MetadataReference.CreateFromFile(Assembly.Load(assembly).Location)));
 
-            var assemblyPath = "migration.dll";
+            var stream = new MemoryStream();
             var result = CSharpCompilation
                 .Create(
                     "assembly",
                     new[] { migrationTree },
                     references: refs,
                     options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
-                        optimizationLevel: OptimizationLevel.Release,
-                        assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default))
-                .Emit(assemblyPath);
+                        optimizationLevel: OptimizationLevel.Release))
+                .Emit(stream);
 
-            var migrationAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath(assemblyPath)); ;
+            //var migrationAssembly = AssemblyLoadContext.Default.LoadFromStream(stream);
+
+            var migrationAssembly = Assembly.Load(stream.ToArray());
 
             var migrationType = migrationAssembly.GetTypes()
                 .First(t => t.GetInterfaces().Contains(typeof(IMigration)));
