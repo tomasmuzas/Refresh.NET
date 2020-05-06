@@ -20,7 +20,7 @@ namespace Refresh.Components.Migrations
             FullValue = type;
 
             var parts = type.Split(".");
-            Namespace = string.Join(',', parts.Take(parts.Length - 1));
+            Namespace = string.Join('.', parts.Take(parts.Length - 1));
             
             var className = parts.Last();
             var GenericPartMatch = Regex.Match(className, @"<([\w\.\s,]*)>");

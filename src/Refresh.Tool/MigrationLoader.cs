@@ -43,7 +43,10 @@ namespace Refresh.Tool
                         optimizationLevel: OptimizationLevel.Release))
                 .Emit(stream);
 
-            //var migrationAssembly = AssemblyLoadContext.Default.LoadFromStream(stream);
+            if (!result.Success)
+            {
+                throw new ArgumentException(string.Join('\n', result.Diagnostics));
+            }
 
             var migrationAssembly = Assembly.Load(stream.ToArray());
 

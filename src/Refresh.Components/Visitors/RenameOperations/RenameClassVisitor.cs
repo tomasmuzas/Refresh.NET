@@ -63,6 +63,11 @@ namespace Refresh.Components.Visitors.RenameOperations
 
         private string ConstructFullClassName(FullType type)
         {
+            if (type == (FullType) null)
+            {
+                return null;
+            }
+
             return type.Namespace + "." + type.ClassName;
         }
     }

@@ -40,16 +40,17 @@ namespace Refresh.Tool
 
                     if (!string.IsNullOrEmpty(o.SolutionPath))
                     {
-                        Console.WriteLine("Analyzing solution");
+                        Console.WriteLine("Loading solution:");
                         var manager = new AnalyzerManager(o.SolutionPath);
                         foreach (var p in manager.Projects.Values)
                         {
+                            Console.WriteLine($"Loading project: {p.ProjectFile.Path}");
                             p.AddToWorkspace(workspace);
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Analyzing project");
+                        Console.WriteLine("Loading project");
                         var manager = new AnalyzerManager();
                         manager.GetProject(o.ProjectPath).AddToWorkspace(workspace);
                     }
