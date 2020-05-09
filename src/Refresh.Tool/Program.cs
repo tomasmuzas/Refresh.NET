@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Buildalyzer;
 using Buildalyzer.Workspaces;
 using CommandLine;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.Extensions.Logging;
 using Refresh.Components.Migrations;
 using Refresh.Components.Visitors;
 
@@ -22,63 +26,87 @@ namespace Refresh.Tool
 
             [Option('m', "Migration", Required = true, HelpText = "Path to migration file")]
             public string MigrationPath { get; set; }
+
+            [Option('v', "Verbose", Required = false, HelpText = "Enable verbose logging")]
+            public bool Verbose { get; set; }
         }
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Parser.Default.ParseArguments<CliOptions>(args)
-                .WithParsed(o =>
+            var parsedArguments = Parser.Default.ParseArguments<CliOptions>(args);
+
+            ILogger<Program> logger = new Logger<Program>(
+                new LoggerFactory());
+
+            await parsedArguments.MapResult(
+                async o => await PerformMigration(o),
+                errors => Task.CompletedTask);
+        }
+
+        private static async Task PerformMigration(CliOptions options)
+        {
+            if (string.IsNullOrEmpty(options.SolutionPath)
+                && string.IsNullOrEmpty(options.MigrationPath))
+            {
+                Console.WriteLine("Either project or sulution path must be provided.");
+                return;
+            }
+
+            var workspace = new AdhocWorkspace();
+
+            if (!string.IsNullOrEmpty(options.SolutionPath))
+            {
+                Console.WriteLine("Loading solution:");
+                var manager = new AnalyzerManager(options.SolutionPath);
+                foreach (var p in manager.Projects.Values)
                 {
-                    if (string.IsNullOrEmpty(o.SolutionPath)
-                        && string.IsNullOrEmpty(o.MigrationPath))
+                    Console.WriteLine($"Loading project: {p.ProjectFile.Path}");
+                    p.AddToWorkspace(workspace);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Loading project");
+                var manager = new AnalyzerManager();
+                manager.GetProject(options.ProjectPath).AddToWorkspace(workspace);
+            }
+
+            Console.WriteLine("Loading migration file");
+            var migration = MigrationLoader.FromPath(options.MigrationPath);
+
+            var timer = Stopwatch.StartNew();
+            await Task.WhenAll(workspace.CurrentSolution.Projects.Select(async project =>
+            {
+                Console.WriteLine($"Migrating project {project.Name}");
+
+                var compilation = (CSharpCompilation) await project.GetCompilationAsync();
+
+                await Task.WhenAll(compilation.SyntaxTrees.Select(async tree =>
+                {
+                    var annotatedTree = tree.WithRootAndOptions(
+                        new AnnotationVisitor().Visit(await tree.GetRootAsync()),
+                        tree.Options);
+
+                    compilation = compilation.ReplaceSyntaxTree(tree, annotatedTree);
+
+                    if (options.Verbose)
                     {
-                        Console.WriteLine("Either project or sulution path must be provided.");
-                        return;
+                        Console.WriteLine("Running migration on " + tree.FilePath);
                     }
 
-                    var workspace = new AdhocWorkspace();
+                    var context = new MigrationContext();
+                    context.Populate(compilation, annotatedTree);
 
-                    if (!string.IsNullOrEmpty(o.SolutionPath))
+                    var ast = migration.Apply(annotatedTree, context);
+
+                    if (ast != annotatedTree)
                     {
-                        Console.WriteLine("Loading solution:");
-                        var manager = new AnalyzerManager(o.SolutionPath);
-                        foreach (var p in manager.Projects.Values)
-                        {
-                            Console.WriteLine($"Loading project: {p.ProjectFile.Path}");
-                            p.AddToWorkspace(workspace);
-                        }
+                        await File.WriteAllTextAsync(tree.FilePath, ast.ToString());
                     }
-                    else
-                    {
-                        Console.WriteLine("Loading project");
-                        var manager = new AnalyzerManager();
-                        manager.GetProject(o.ProjectPath).AddToWorkspace(workspace);
-                    }
+                }));
+            }));
 
-                    Console.WriteLine("Loading migration file");
-                    var migration = MigrationLoader.FromPath(o.MigrationPath);
-
-                    foreach (var project in workspace.CurrentSolution.Projects)
-                    {
-                        Console.WriteLine($"Migrating project {project.Name}");
-
-                        var compilation = (CSharpCompilation) project.GetCompilationAsync().Result;
-
-                        foreach (var tree in compilation.SyntaxTrees)
-                        {
-                            var annotatedTree = tree.WithRootAndOptions(new AnnotationVisitor().Visit(tree.GetRoot()), tree.Options);
-                            compilation = compilation.ReplaceSyntaxTree(tree, annotatedTree);
-
-                            Console.WriteLine("Running migration on " + tree.FilePath);
-
-                            var context = new MigrationContext();
-                            context.Populate(compilation, annotatedTree);
-
-                            var ast = migration.Apply(annotatedTree, context);
-                            File.WriteAllText(tree.FilePath, ast.ToString());
-                        }
-                    }
-                });
+            Console.WriteLine("Migration took: " + timer.Elapsed);
         }
     }
 }
