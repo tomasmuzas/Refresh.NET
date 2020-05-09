@@ -1,8 +1,8 @@
 # Refresh.NET
 
-![Nuget](https://img.shields.io/nuget/v/Refresh.Components?style=flat-square)
+![Nuget](https://img.shields.io/nuget/v/Refresh.Components?label=Refresh.Components&style=flat-square)
 
-![Nuget](https://img.shields.io/nuget/v/Refresh.Tool?style=flat-square)
+![Nuget](https://img.shields.io/nuget/v/Refresh.Tool?label=Refresh.Tool&style=flat-square)
 
 A simple CLI tool to easily migrate .NET projects by writing custom migrations.
 
