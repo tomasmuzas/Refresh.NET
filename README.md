@@ -21,6 +21,8 @@ Use the tool:
 
 `refresh [-p Path/To/Project.csproj | -s Path/To/Solution.sln] -m Path/To/Migration.cs`
 
+`-v|--Verbose` - enable logging on which file is currently being migrated
+
 If both defined, solution takes precendence over project. 
 
 # Migration file
