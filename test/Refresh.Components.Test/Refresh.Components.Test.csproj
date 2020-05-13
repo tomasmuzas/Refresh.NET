@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Refresh.Components\Refresh.Components.csproj" />
+    <ProjectReference Include="..\..\src\Refresh.Tool\Refresh.Tool.csproj" />
   </ItemGroup>
 
 </Project>
